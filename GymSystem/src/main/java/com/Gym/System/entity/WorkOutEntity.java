@@ -12,7 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class treinosEntity {
+public class WorkOutEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,7 +21,7 @@ public class treinosEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private userEntity userId;
+    private UserEntity userId;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -30,6 +30,6 @@ public class treinosEntity {
             inverseJoinColumns = @JoinColumn(name =  "id_exercise")
 
     )
-    private Set<exerciseEntity> listaExercicios = new HashSet<>();
+    private Set<ExerciseEntity> listaExercicios = new HashSet<>();
 
 }

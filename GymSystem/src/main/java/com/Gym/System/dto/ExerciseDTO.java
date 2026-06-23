@@ -1,6 +1,6 @@
 package com.Gym.System.dto;
 
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class exerciseDTO {
+public class ExerciseDTO {
+    @NotBlank
     private String exercicio;
+    @NotBlank
     private String grupoMuscular;
 }

@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class exerciseEntity {
+public class ExerciseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
