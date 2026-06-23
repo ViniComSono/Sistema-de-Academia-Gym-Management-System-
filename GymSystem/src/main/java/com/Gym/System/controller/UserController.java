@@ -1,15 +1,16 @@
 package com.Gym.System.controller;
 
-import com.Gym.System.dto.userDTO;
-import com.Gym.System.entity.userEntity;
-import com.Gym.System.service.userService;
+import com.Gym.System.dto.UserDTO;
+import com.Gym.System.entity.UserEntity;
+import com.Gym.System.exception.NotFoundException;
+import com.Gym.System.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,27 +20,27 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @RequestMapping(value = "/user")
-public class userController {
+public class UserController {
 
-    private final userService userService;
+    private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<userEntity>> findAllUsers(){
+    public ResponseEntity<List<UserEntity>> findAllUsers() throws NotFoundException{
         return new ResponseEntity<>(userService.findAlll(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/id/{id}")
-    public ResponseEntity<userEntity> findByName(@PathVariable Long id){
+    public ResponseEntity<UserEntity> findByName(@PathVariable Long id) throws NotFoundException{
         return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping(value = "/name/{name}")
-    public ResponseEntity<userEntity> findByName(@PathVariable String name){
+    public ResponseEntity<UserEntity> findByName(@PathVariable String name) throws NotFoundException {
         return new ResponseEntity<>(userService.findByUserName(name), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<userEntity> cadastrarUsuario(@RequestBody userDTO userDto){
+    public ResponseEntity<UserEntity> cadastrarUsuario(@Validated @RequestBody UserDTO userDto){
         return new ResponseEntity<>(userService.cadastrarUsuario(userDto), HttpStatus.OK);
     }
 }

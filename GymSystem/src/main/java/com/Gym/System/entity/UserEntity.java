@@ -2,9 +2,8 @@ package com.Gym.System.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.context.annotation.Bean;
-
 import java.math.BigDecimal;
+import java.util.*;
 
 @Getter
 @Setter
@@ -13,7 +12,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class userEntity {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,5 +28,6 @@ public class userEntity {
     private BigDecimal peso;
     private BigDecimal altura;
 
-
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+    private List<PhysicalAssessmentEntity> assessementList = new ArrayList<>();
 }
