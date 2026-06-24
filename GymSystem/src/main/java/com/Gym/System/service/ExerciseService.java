@@ -34,7 +34,7 @@ public class ExerciseService {
         return exercicioRepository.findById(id).orElseThrow(() -> new NotFoundException("Exercise not found"));
     }
 
-    public ExerciseEntity fingByExerciseNameIgnoreCase(String name) throws NotFoundException{
+    public ExerciseEntity findByExerciseNameIgnoreCase(String name) throws NotFoundException{
         try{
             return exercicioRepository.findByExercicioIgnoreCase(name);
         } catch (Exception e) {
