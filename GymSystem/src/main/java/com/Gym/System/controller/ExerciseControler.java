@@ -7,6 +7,7 @@ import com.Gym.System.service.ExerciseService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,11 @@ public class ExerciseControler {
     @GetMapping(value = "/grupoMuscular/{grupoMuscular}")
     public ResponseEntity<List<ExerciseEntity>> findByGrupoMuscular(@PathVariable String grupoMuscular) throws NotFoundException {
         return new ResponseEntity<>(exerciseService.findByGrupoMuscularIgnoreCase(grupoMuscular), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/ExerciseName/{name}")
+    public ResponseEntity<ExerciseEntity> findByExerciseNameIgnoreCase(@PathVariable String name) throws NotFoundException{
+        return new ResponseEntity<>(exerciseService.findByExerciseNameIgnoreCase(name), HttpStatus.FOUND);
     }
 
     @GetMapping(value = "/id/{id}")

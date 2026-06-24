@@ -5,7 +5,6 @@ import com.Gym.System.entity.UserEntity;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.repository.UserRepository;
 import lombok.*;
-import org.hibernate.sql.exec.ExecutionException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

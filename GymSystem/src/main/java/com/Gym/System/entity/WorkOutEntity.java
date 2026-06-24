@@ -1,9 +1,12 @@
 package com.Gym.System.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -11,6 +14,7 @@ import java.util.Set;
 @Table(name = "treinos")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 public class WorkOutEntity {
 
@@ -18,6 +22,9 @@ public class WorkOutEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "treino_id")
     private Long treinoId;
+
+    @Column(name = "work_out_name")
+    private String WorkOutName;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -28,8 +35,8 @@ public class WorkOutEntity {
             name = "treinos_exercise",
             joinColumns = @JoinColumn(name = "treino_id"),
             inverseJoinColumns = @JoinColumn(name =  "id_exercise")
-
     )
-    private Set<ExerciseEntity> listaExercicios = new HashSet<>();
+    @Builder.Default
+    private Map<Long ,ExerciseEntity> listaExercicios = new HashMap<>();
 
 }

@@ -29,5 +29,6 @@ public class UserEntity {
     private BigDecimal altura;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-    private List<PhysicalAssessmentEntity> assessementList = new ArrayList<>();
+    @Builder.Default
+    private Map<Long, PhysicalAssessmentEntity> assessementList = new HashMap<>();
 }
