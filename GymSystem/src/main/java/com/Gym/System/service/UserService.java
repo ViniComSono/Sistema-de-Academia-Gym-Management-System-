@@ -1,6 +1,6 @@
 package com.Gym.System.service;
 
-import com.Gym.System.dto.UserDTO;
+import com.Gym.System.dto.request.UserDTO;
 import com.Gym.System.entity.UserEntity;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.repository.UserRepository;
@@ -20,15 +20,11 @@ public class UserService {
     private final UserRepository userRepository;
 
     public List<UserEntity> findAlll() throws NotFoundException{
-         try{
-             return userRepository.findAll();
-         } catch (Exception e) {
-             throw new NotFoundException("Not found this user");
-         }
+         return userRepository.findAll();
     }
 
     public UserEntity findByUserName(String name) throws NotFoundException{
-        UserEntity user = userRepository.findByNome(name);
+        UserEntity user = userRepository.findByName(name);
 
         if(user != null)
             return user;
@@ -40,13 +36,13 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found this User"));
     }
 
-    public UserEntity cadastrarUsuario(UserDTO user) throws RuntimeException{
-        UserEntity verification = userRepository.findByNome(user.getNome());
+    public UserEntity createUser(UserDTO user) throws RuntimeException{
+        UserEntity verification = userRepository.findByName(user.getName());
         if(verification == null){
             UserEntity newUser = UserEntity.builder()
-                    .nome(user.getNome())
-                    .peso(user.getPeso())
-                    .altura(user.getAltura())
+                    .name(user.getName())
+                    .weight(user.getWeight())
+                    .height(user.getHeight())
                     .build();
             return userRepository.save(newUser);
         }else{

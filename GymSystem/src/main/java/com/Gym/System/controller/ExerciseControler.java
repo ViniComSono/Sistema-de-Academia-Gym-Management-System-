@@ -1,6 +1,6 @@
 package com.Gym.System.controller;
 
-import com.Gym.System.dto.ExerciseDTO;
+import com.Gym.System.dto.request.ExerciseDTO;
 import com.Gym.System.entity.ExerciseEntity;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.service.ExerciseService;
@@ -49,5 +49,11 @@ public class ExerciseControler {
     @PostMapping
     public ResponseEntity<ExerciseEntity> postExercise(@Validated @RequestBody ExerciseDTO exerciseDTO){
         return new ResponseEntity<>(exerciseService.cadastrarExercicio(exerciseDTO),  HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<Void> deleteExercise(@PathVariable Long id) throws NotFoundException{
+        exerciseService.removeExercise(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

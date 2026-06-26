@@ -1,4 +1,4 @@
-package com.Gym.System.dto;
+package com.Gym.System.dto.request;
 
 import com.Gym.System.entity.ExerciseEntity;
 import com.Gym.System.entity.UserEntity;
@@ -6,10 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @Setter
@@ -20,9 +17,8 @@ public class WorkOutDTO {
     @NotNull
     private String workOutName;
 
-    @NotNull
-    private Long userId;
+    private Set<Long> usersId;
 
-    private List<Long> exercisesId = new ArrayList<>();
+    private Set<Long> exercisesId;
 
 }

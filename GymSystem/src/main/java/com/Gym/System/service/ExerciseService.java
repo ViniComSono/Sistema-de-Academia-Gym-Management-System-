@@ -1,6 +1,6 @@
 package com.Gym.System.service;
 
-import com.Gym.System.dto.ExerciseDTO;
+import com.Gym.System.dto.request.ExerciseDTO;
 import com.Gym.System.entity.ExerciseEntity;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.repository.ExerciseRepository;
@@ -36,7 +36,7 @@ public class ExerciseService {
 
     public ExerciseEntity findByExerciseNameIgnoreCase(String name) throws NotFoundException{
         try{
-            return exercicioRepository.findByExercicioIgnoreCase(name);
+            return exercicioRepository.findByExerciseNameIgnoreCase(name);
         } catch (Exception e) {
             throw new NotFoundException("Dont exist this exercise");
         }
@@ -44,23 +44,28 @@ public class ExerciseService {
 
     public List<ExerciseEntity> findByGrupoMuscularIgnoreCase(String grupoMuscular) throws NotFoundException{
         try{
-            return exercicioRepository.findByGrupoMuscularIgnoreCase(grupoMuscular);
+            return exercicioRepository.findByMuscleGroupIgnoreCase(grupoMuscular);
         } catch (RuntimeException e) {
             throw new NotFoundException("Dont exist this exercise");
         }
     }
 
     public ExerciseEntity cadastrarExercicio(ExerciseDTO exerciseDTO){
-        ExerciseEntity verification = exercicioRepository.findByExercicioIgnoreCase(exerciseDTO.getExercicio());
+        ExerciseEntity verification = exercicioRepository.findByExerciseNameIgnoreCase(exerciseDTO.getExerciseName());
 
         if(verification == null){
             ExerciseEntity exercise = ExerciseEntity.builder()
-                    .exercicio(exerciseDTO.getExercicio())
-                    .grupoMuscular(exerciseDTO.getGrupoMuscular())
+                    .exerciseName(exerciseDTO.getExerciseName())
+                    .muscleGroup(exerciseDTO.getMuscleGroup())
                     .build();
             return exercicioRepository.save(exercise);
         }else{
             throw new RuntimeException("This Exercise exist on the System");
         }
+    }
+
+    public void removeExercise(Long id) throws NotFoundException{
+        ExerciseEntity exercise = findByExerciseID(id);
+        exercicioRepository.delete(exercise);
     }
 }

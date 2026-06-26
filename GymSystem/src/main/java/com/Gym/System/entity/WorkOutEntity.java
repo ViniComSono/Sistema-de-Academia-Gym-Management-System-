@@ -4,14 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
-@Table(name = "treinos")
+@Table(name = "workout")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,23 +17,27 @@ public class WorkOutEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "treino_id")
-    private Long treinoId;
+    @Column(name = "work_out_id")
+    private Long workOutId;
 
     @Column(name = "work_out_name")
-    private String WorkOutName;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity userId;
+    private String workOutName;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "treinos_exercise",
-            joinColumns = @JoinColumn(name = "treino_id"),
+            name = "workout_exercise",
+            joinColumns = @JoinColumn(name = "work_out_id"),
             inverseJoinColumns = @JoinColumn(name =  "id_exercise")
     )
     @Builder.Default
-    private Map<Long ,ExerciseEntity> listaExercicios = new HashMap<>();
+    private Set<ExerciseEntity> exerciseList = new HashSet<>();
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "workout_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name =  "id_work_out")
+    )
+    @Builder.Default
+    private Set<UserEntity> userList = new HashSet<>();
 }

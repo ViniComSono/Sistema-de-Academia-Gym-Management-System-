@@ -1,4 +1,4 @@
-package com.Gym.System.dto;
+package com.Gym.System.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ExerciseDTO {
     @NotBlank
-    private String exercicio;
+    private String exerciseName;
     @NotBlank
-    private String grupoMuscular;
+    private String muscleGroup;
 }

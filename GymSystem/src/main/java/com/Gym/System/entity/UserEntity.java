@@ -23,12 +23,16 @@ public class UserEntity {
     //String password;
 
     @Column(nullable = false)
-    private String nome;
+    private String name;
 
-    private BigDecimal peso;
-    private BigDecimal altura;
+    private BigDecimal weight;
+    private BigDecimal height;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     @Builder.Default
-    private Map<Long, PhysicalAssessmentEntity> assessementList = new HashMap<>();
+    private Set<PhysicalAssessmentEntity> assessementList = new HashSet<>();
+
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "userList")
+    @Builder.Default
+    private Set<WorkOutEntity> workOutList = new HashSet<>();
 }
