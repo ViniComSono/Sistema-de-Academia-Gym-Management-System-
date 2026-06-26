@@ -18,8 +18,8 @@ public class ExerciseEntity {
     @Column(name = "exercise_id")
     private Long exerciseId;
 
-    @Column(nullable = false, unique = true)
-    private String exercicio;
-    @Column(nullable = false, name = "grupo_muscular")
-    private String grupoMuscular;
+    @Column(nullable = false, unique = true, name = "exercise_name")
+    private String exerciseName;
+    @Column(nullable = false, name = "muscle_group")
+    private String muscleGroup;
 }
