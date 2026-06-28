@@ -1,8 +1,5 @@
 package com.Gym.System.dto.request;
 
-import com.Gym.System.entity.ExerciseEntity;
-import com.Gym.System.entity.UserEntity;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -12,7 +9,7 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkOutDTO {
+public class WorkOutRequestDTO {
 
     @NotNull
     private String workOutName;

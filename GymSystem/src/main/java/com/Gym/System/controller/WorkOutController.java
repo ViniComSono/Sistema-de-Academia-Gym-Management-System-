@@ -1,8 +1,6 @@
 package com.Gym.System.controller;
 
-import com.Gym.System.dto.request.WorkOutDTO;
-import com.Gym.System.dto.request.WorkOutExercisesDTO;
-import com.Gym.System.dto.request.WorkOutPutDTO;
+import com.Gym.System.dto.request.WorkOutRequestDTO;
 import com.Gym.System.entity.WorkOutEntity;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.service.WorkOutService;
@@ -42,8 +40,8 @@ public class WorkOutController {
     }
 
     @PostMapping
-    public ResponseEntity<WorkOutEntity> createWorkOut(@RequestBody WorkOutDTO workOutDTO) throws NotFoundException{
-        return new ResponseEntity<>(workOutService.createWorkOut(workOutDTO), HttpStatus.CREATED);
+    public ResponseEntity<WorkOutEntity> createWorkOut(@RequestBody WorkOutRequestDTO workOutRequestDTO) throws NotFoundException{
+        return new ResponseEntity<>(workOutService.createWorkOut(workOutRequestDTO), HttpStatus.CREATED);
     }
 
     @PutMapping

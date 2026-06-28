@@ -1,6 +1,6 @@
 package com.Gym.System.service;
 
-import com.Gym.System.dto.request.ExerciseDTO;
+import com.Gym.System.dto.request.ExerciseRequestDTO;
 import com.Gym.System.entity.ExerciseEntity;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.repository.ExerciseRepository;
@@ -50,7 +50,7 @@ public class ExerciseService {
         }
     }
 
-    public ExerciseEntity cadastrarExercicio(ExerciseDTO exerciseDTO){
+    public ExerciseEntity cadastrarExercicio(ExerciseRequestDTO exerciseDTO){
         ExerciseEntity verification = exercicioRepository.findByExerciseNameIgnoreCase(exerciseDTO.getExerciseName());
 
         if(verification == null){
