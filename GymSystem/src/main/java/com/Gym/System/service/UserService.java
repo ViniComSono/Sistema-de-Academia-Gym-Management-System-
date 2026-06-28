@@ -1,13 +1,18 @@
 package com.Gym.System.service;
 
-import com.Gym.System.dto.request.UserRequestDTO;
+import com.Gym.System.dto.request.*;
+import com.Gym.System.dto.response.UserResponseDTO;
 import com.Gym.System.entity.UserEntity;
+import com.Gym.System.entity.WorkOutEntity;
 import com.Gym.System.exception.NotFoundException;
+import com.Gym.System.mapper.UserMapper;
 import com.Gym.System.repository.UserRepository;
 import lombok.*;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -18,8 +23,10 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final WorkOutService workOutService;
 
-    public List<UserEntity> findAlll() throws NotFoundException{
+    public List<UserEntity> findAll(){
          return userRepository.findAll();
     }
 
@@ -36,19 +43,99 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found this User"));
     }
 
-    public UserEntity createUser(UserRequestDTO user) throws RuntimeException{
-        UserEntity verification = userRepository.findByName(user.getName());
-        if(verification == null){
-            UserEntity newUser = UserEntity.builder()
-                    .name(user.getName())
-                    .weight(user.getWeight())
-                    .height(user.getHeight())
-                    .build();
-            return userRepository.save(newUser);
-        }else{
-            throw new RuntimeException("This user exist on the System");
-        }
+    public Set<UserResponseDTO> findAllResponse(){
+        Set<UserEntity> users = new HashSet<>(userRepository.findAll());
+        return userMapper.UserResponseSet(users);
     }
 
+    public UserResponseDTO findByIdResponse(Long id) throws NotFoundException{
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found this User"));
+        return userMapper.userResponseDTO(user);
+    }
 
+    public UserResponseDTO findByUserNameResponse(String name) throws NotFoundException{
+        UserEntity user = userRepository.findByName(name);
+
+        if(user != null)
+            return userMapper.userResponseDTO(user);
+        else
+            throw new NotFoundException("Not found this user");
+    }
+
+    public UserResponseDTO createUser(UserRequestDTO userRequest){
+        UserEntity verification = userRepository.findByName(userRequest.getName());
+
+        UserEntity newUser = UserEntity.builder()
+                .name(userRequest.getName())
+                .weight(userRequest.getWeight())
+                .height(userRequest.getHeight())
+                .build();
+
+        userRepository.save(newUser);
+        return userMapper.userResponseDTO(newUser);
+
+    }
+
+    public UserResponseDTO addWorkOut(UserWorkOutsRequestDTO userRequest) throws NotFoundException{
+        UserEntity user = findById(userRequest.getUserId());
+
+        for(Long workOutId : userRequest.getWorkOutIdList()){
+            WorkOutEntity workOut = workOutService.findById(workOutId);
+            user.getWorkOutList().add(workOut);
+        }
+
+        userRepository.save(user);
+        return userMapper.userResponseDTO(user);
+    }
+
+    public UserResponseDTO removeWorkOut(UserWorkOutsRequestDTO userRequest) throws NotFoundException{
+        UserEntity user = findById(userRequest.getUserId());
+
+        for(Long workOutId : userRequest.getWorkOutIdList()){
+            WorkOutEntity workOut = workOutService.findById(workOutId);
+            user.getWorkOutList().remove(workOut);
+        }
+
+        userRepository.save(user);
+        return userMapper.userResponseDTO(user);
+    }
+
+    public UserResponseDTO editAll(UserPutRequestDTO userRequest) throws NotFoundException{
+        UserEntity user = findById(userRequest.getUserId());
+        Set<WorkOutEntity> workOutSet = new HashSet<>();
+
+        for(Long workOutId : userRequest.getWorkOutIdList()){
+            WorkOutEntity workOut = workOutService.findById(workOutId);
+            workOutSet.add(workOut);
+        }
+            /*
+            FAZER A DE ASSESSMENT DEPOIS, NAO FIZ AGORA POIS NAO ESTA PRONTO NO MOMENNTO
+             */
+
+        user.setName(userRequest.getName());
+        user.setWeight(userRequest.getWeight());
+        user.setHeight(userRequest.getHeight());
+        user.setWorkOutList(workOutSet);
+
+        userRepository.save(user);return
+        userMapper.userResponseDTO(user);
+    }
+
+    public UserResponseDTO editNameUser(UserNameRequestDTO userRequest) throws NotFoundException{
+        UserEntity user = findById(userRequest.getUserId());
+        user.setName(userRequest.getName());
+
+        userRepository.save(user);
+        return userMapper.userResponseDTO(user);
+    }
+
+    public UserResponseDTO editUserCharacteristics(UserCharacteristicsRequestDTO userRequest) throws NotFoundException{
+        UserEntity user = findById(userRequest.getUserId());
+
+        user.setWeight(userRequest.getWeight());
+        user.setHeight(userRequest.getHeight());
+
+        userRepository.save(user);
+        return userMapper.userResponseDTO(user);
+    }
 }

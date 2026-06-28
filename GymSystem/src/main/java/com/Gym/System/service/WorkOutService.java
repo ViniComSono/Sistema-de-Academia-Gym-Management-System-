@@ -8,6 +8,7 @@ import com.Gym.System.dto.response.WorkOutResponseDTO;
 import com.Gym.System.entity.ExerciseEntity;
 import com.Gym.System.entity.UserEntity;
 import com.Gym.System.entity.WorkOutEntity;
+import com.Gym.System.exception.BadRequestException;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.mapper.WorkOutMapper;
 import com.Gym.System.repository.WorkOutRepository;
@@ -29,7 +30,7 @@ public class WorkOutService {
     private final UserService userService;
     private final WorkOutMapper workOutMapper;
 
-    public List<WorkOutEntity> findByAll(){
+    public List<WorkOutEntity> findAll(){
         return workOutRepository.findAll();
     }
 
@@ -42,12 +43,30 @@ public class WorkOutService {
         if(user != null){
             return workOutRepository.findByUserList_UserId(userId);
         }else{
-            throw new NotFoundException("Not found this exercise Id");
+            throw new NotFoundException("Not found this user Id");
         }
     }
 
-    //arrumar com nova exception depois
-    public WorkOutResponseDTO createWorkOut(WorkOutRequestDTO workOutRequest) throws NotFoundException {
+    public Set<WorkOutResponseDTO> findAllResponse(){
+        Set<WorkOutEntity> workOut = new HashSet<>(workOutRepository.findAll());
+        return workOutMapper.workOutResponseSet(workOut);
+    }
+
+    public WorkOutResponseDTO findByIdResponse(Long id) throws NotFoundException{
+        WorkOutEntity workOut = workOutRepository.findById(id).orElseThrow(() -> new NotFoundException("Not Found this workOut"));
+        return workOutMapper.workOutResponse(workOut);
+    }
+
+    public Set<WorkOutResponseDTO> findByUserIdResponse(Long userId) throws NotFoundException{
+        UserEntity user = userService.findById(userId);
+        if(user != null){
+            return workOutMapper.workOutResponseSet(workOutRepository.findByUserList_UserId(userId));
+        }else{
+            throw new NotFoundException("Not found this user Id");
+        }
+    }
+
+    public WorkOutResponseDTO createWorkOut(WorkOutRequestDTO workOutRequest) throws NotFoundException, BadRequestException {
         Set<UserEntity> users = new HashSet<>();
         Set<ExerciseEntity> exercises = new HashSet<>();
 
@@ -71,7 +90,7 @@ public class WorkOutService {
 
             return workOutMapper.workOutResponse(workOut);
         }else{
-            throw new RuntimeException("You put a lot exercises on your list");
+            throw new BadRequestException("Your exercise list has more than 20 items");
         }
     }
 
@@ -136,8 +155,7 @@ public class WorkOutService {
 
         for(Long exerciseId : workOutRequest.getExerciseList()){
             if(!workOut.getUserList().contains(userService.findById(exerciseId))) {
-                ExerciseEntity exercise = exerciseService.findByExerciseID(exerciseId);
-                workOut.getExerciseList().add(exercise);
+                workOut.getExerciseList().add(exerciseService.findByExerciseID(exerciseId));
             }
         }
 
