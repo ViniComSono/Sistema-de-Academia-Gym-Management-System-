@@ -1,12 +1,15 @@
 package com.Gym.System.service;
 
-import com.Gym.System.dto.request.WorkOutDTO;
-import com.Gym.System.dto.request.WorkOutExercisesDTO;
-import com.Gym.System.dto.request.WorkOutPutDTO;
+import com.Gym.System.dto.request.WorkOutExerciseRequestDTO;
+import com.Gym.System.dto.request.WorkOutNameRequestDTO;
+import com.Gym.System.dto.request.WorkOutRequestDTO;
+import com.Gym.System.dto.request.WorkOutUsersRequestDTO;
+import com.Gym.System.dto.response.WorkOutResponseDTO;
 import com.Gym.System.entity.ExerciseEntity;
 import com.Gym.System.entity.UserEntity;
 import com.Gym.System.entity.WorkOutEntity;
 import com.Gym.System.exception.NotFoundException;
+import com.Gym.System.mapper.WorkOutMapper;
 import com.Gym.System.repository.WorkOutRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +27,7 @@ public class WorkOutService {
     private final WorkOutRepository workOutRepository;
     private final ExerciseService exerciseService;
     private final UserService userService;
+    private final WorkOutMapper workOutMapper;
 
     public List<WorkOutEntity> findByAll(){
         return workOutRepository.findAll();
@@ -43,112 +47,117 @@ public class WorkOutService {
     }
 
     //arrumar com nova exception depois
-    public WorkOutEntity createWorkOut(WorkOutDTO workOutDTO) throws NotFoundException {
+    public WorkOutResponseDTO createWorkOut(WorkOutRequestDTO workOutRequest) throws NotFoundException {
         Set<UserEntity> users = new HashSet<>();
         Set<ExerciseEntity> exercises = new HashSet<>();
 
-        if(workOutDTO.getExercisesId().size() <= 20){
+        if(workOutRequest.getExercisesId().size() < 20){
 
-            for(Long id : workOutDTO.getUsersId()){
+            for(Long id : workOutRequest.getUsersId()){
                 UserEntity user = userService.findById(id);
                 users.add(user);
             }
 
-            for(Long exerciseId : workOutDTO.getExercisesId()){
+            for(Long exerciseId : workOutRequest.getExercisesId()){
                 ExerciseEntity exercise = exerciseService.findByExerciseID(exerciseId);
                 exercises.add(exercise);
             }
 
             WorkOutEntity workOut = WorkOutEntity.builder()
-                    .workOutName(workOutDTO.getWorkOutName())
+                    .workOutName(workOutRequest.getWorkOutName())
                     .userList(users)
                     .exerciseList(exercises)
                     .build();
 
-            return workOutRepository.save(workOut);
+            return workOutMapper.workOutResponse(workOut);
         }else{
             throw new RuntimeException("You put a lot exercises on your list");
         }
     }
 
-    public WorkOutEntity editWorkOut(WorkOutPutDTO workOutPutDTO) throws NotFoundException{
-        WorkOutEntity workOut = findById(workOutPutDTO.getWorkOutId());
+    public WorkOutResponseDTO editAllWorkOut(WorkOutEntity workOutRequest) throws NotFoundException{
+        WorkOutEntity workOut = findById(workOutRequest.getWorkOutId());
 
-        Set<UserEntity> users = new HashSet<>();
+        if(workOut != null){
+            workOut.setWorkOutName(workOutRequest.getWorkOutName());
+            workOut.setExerciseList(workOutRequest.getExerciseList());
+            workOut.setUserList(workOutRequest.getUserList());
 
-        for(Long id : workOutPutDTO.getUsersId()){
-            UserEntity user = userService.findById(id);
-            users.add(user);
+            return workOutMapper.workOutResponse(workOut);
+        }else{
+            throw new NotFoundException("This workOut Id don´t exist");
         }
-
-        workOut.setWorkOutName(workOutPutDTO.getWorkOutName());
-        workOut.setUserList(users);
-        return workOutRepository.save(workOut);
     }
 
-    public WorkOutEntity editWorkOutName(WorkOutPutDTO workOutPutDTO) throws NotFoundException{
-        WorkOutEntity workOut = findById(workOutPutDTO.getWorkOutId());
+    public WorkOutResponseDTO editWorkOutName(WorkOutNameRequestDTO workOutRequest) throws NotFoundException{
+        WorkOutEntity workOut = findById(workOutRequest.getWorkOutId());
 
-        workOut.setWorkOutName(workOutPutDTO.getWorkOutName());
-        return workOutRepository.save(workOut);
+        if(workOut != null){
+            workOut.setWorkOutName(workOutRequest.getWorkOutName());
+
+            workOutRepository.save(workOut);
+            return workOutMapper.workOutResponse(workOut);
+        }else{
+            throw new NotFoundException("This workOut Id don´t exist");
+        }
     }
 
-    public WorkOutEntity addWorkOutUsers(WorkOutPutDTO workOutPutDTO) throws NotFoundException{
-        WorkOutEntity workOut = findById(workOutPutDTO.getWorkOutId());
+    public WorkOutResponseDTO addWorkOutUsers(WorkOutUsersRequestDTO workOutRequest) throws NotFoundException{
+        WorkOutEntity workOut = findById(workOutRequest.getWorkOutId());
 
-        for(Long id : workOutPutDTO.getUsersId()){
+        for(Long id : workOutRequest.getUsersId()){
             if(!workOut.getUserList().contains(userService.findById(id))) {
                 UserEntity user = userService.findById(id);
                 workOut.getUserList().add(user);
-            }else{
-                throw new NotFoundException("The id " + id + " user has been on the list");
             }
         }
 
-        return workOutRepository.save(workOut);
+        workOutRepository.save(workOut);
+        return workOutMapper.workOutResponse(workOut);
     }
 
-    public WorkOutEntity removeWorkOutUsers(WorkOutPutDTO workOutPutDTO) throws NotFoundException{
-        WorkOutEntity workOut = findById(workOutPutDTO.getWorkOutId());
+    public WorkOutResponseDTO removeWorkOutUsers(WorkOutUsersRequestDTO workOutRequest) throws NotFoundException{
+        WorkOutEntity workOut = findById(workOutRequest.getWorkOutId());
 
-        for(Long id : workOutPutDTO.getUsersId()){
+        for(Long id : workOutRequest.getUsersId()){
             if(workOut.getUserList().contains(userService.findById(id))) {
-                workOut.getUserList().remove(id);
+                workOut.getUserList().remove(userService.findById(id));
             }else{
-                throw new NotFoundException("The id " + id + " don´t exist on the list");
+                throw new NotFoundException("The id " + id + " don´t exist on this work out");
             }
         }
 
-        return workOutRepository.save(workOut);
+        workOutRepository.save(workOut);
+        return workOutMapper.workOutResponse(workOut);
     }
 
-    public WorkOutEntity addWorkOutExercise(WorkOutExercisesDTO workOutExercisesDTO) throws NotFoundException{
-        WorkOutEntity workOut = findById(workOutExercisesDTO.getWorkOutId());
+    public WorkOutResponseDTO addWorkOutExercise(WorkOutExerciseRequestDTO workOutRequest) throws NotFoundException{
+        WorkOutEntity workOut = findById(workOutRequest.getWorkOutId());
 
-        for(Long id : workOutExercisesDTO.getExercisesId()){
-            if(!workOut.getUserList().contains(findById(id))) {
-                ExerciseEntity exercise = exerciseService.findByExerciseID(id);
+        for(Long exerciseId : workOutRequest.getExerciseList()){
+            if(!workOut.getUserList().contains(userService.findById(exerciseId))) {
+                ExerciseEntity exercise = exerciseService.findByExerciseID(exerciseId);
                 workOut.getExerciseList().add(exercise);
-            }else{
-                throw new NotFoundException("The id " + id + " exercise has been on the list");
             }
         }
 
-        return workOutRepository.save(workOut);
+        workOutRepository.save(workOut);
+        return workOutMapper.workOutResponse(workOut);
     }
 
-    public WorkOutEntity removeWorkOutExercise(WorkOutExercisesDTO workOutExercisesDTO) throws NotFoundException {
-        WorkOutEntity workOut = findById(workOutExercisesDTO.getWorkOutId());
+    public WorkOutResponseDTO removeWorkOutExercise(WorkOutExerciseRequestDTO workOutRequest) throws NotFoundException {
+        WorkOutEntity workOut = findById(workOutRequest.getWorkOutId());
 
-        for(Long id : workOutExercisesDTO.getExercisesId()){
-            if(workOut.getUserList().contains(findById(id))) {
-                workOut.getExerciseList().remove(id);
+        for(Long exerciseId : workOutRequest.getExerciseList()){
+            if(workOut.getExerciseList().contains(exerciseService.findByExerciseID(exerciseId))) {
+                workOut.getExerciseList().remove(exerciseService.findByExerciseID(exerciseId));
             }else{
-                throw new NotFoundException("The id " + id + " don´t exist on the list");
+                throw new NotFoundException("The id " + exerciseId + " don´t exist on this work out");
             }
         }
 
-        return workOutRepository.save(workOut);
+        workOutRepository.save(workOut);
+        return workOutMapper.workOutResponse(workOut);
     }
 
     public void deleteWorkOut(Long workOutId) throws NotFoundException{

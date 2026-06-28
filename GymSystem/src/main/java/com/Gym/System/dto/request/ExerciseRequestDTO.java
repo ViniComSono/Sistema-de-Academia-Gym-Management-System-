@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExerciseDTO {
+public class ExerciseRequestDTO {
     @NotBlank
     private String exerciseName;
     @NotBlank

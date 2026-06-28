@@ -1,13 +1,12 @@
 package com.Gym.System.controller;
 
-import com.Gym.System.dto.request.ExerciseDTO;
+import com.Gym.System.dto.request.ExerciseRequestDTO;
 import com.Gym.System.entity.ExerciseEntity;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.service.ExerciseService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -47,7 +46,7 @@ public class ExerciseControler {
     }
 
     @PostMapping
-    public ResponseEntity<ExerciseEntity> postExercise(@Validated @RequestBody ExerciseDTO exerciseDTO){
+    public ResponseEntity<ExerciseEntity> postExercise(@Validated @RequestBody ExerciseRequestDTO exerciseDTO){
         return new ResponseEntity<>(exerciseService.cadastrarExercicio(exerciseDTO),  HttpStatus.CREATED);
     }
 

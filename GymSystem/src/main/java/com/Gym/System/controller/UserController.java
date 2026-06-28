@@ -1,6 +1,6 @@
 package com.Gym.System.controller;
 
-import com.Gym.System.dto.request.UserDTO;
+import com.Gym.System.dto.request.UserRequestDTO;
 import com.Gym.System.entity.UserEntity;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.service.UserService;
@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserEntity> cadastrarUsuario(@Validated @RequestBody UserDTO userDto){
+    public ResponseEntity<UserEntity> cadastrarUsuario(@Validated @RequestBody UserRequestDTO userDto){
         return new ResponseEntity<>(userService. createUser(userDto), HttpStatus.OK);
     }
 }

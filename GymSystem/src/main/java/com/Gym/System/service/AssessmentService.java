@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
 @Getter
 @Setter
 @AllArgsConstructor
-public class AssessmeentService {
+public class AssessmentService {
 }

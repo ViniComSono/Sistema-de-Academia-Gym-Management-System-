@@ -1,6 +1,6 @@
 package com.Gym.System.service;
 
-import com.Gym.System.dto.request.UserDTO;
+import com.Gym.System.dto.request.UserRequestDTO;
 import com.Gym.System.entity.UserEntity;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.repository.UserRepository;
@@ -36,7 +36,7 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found this User"));
     }
 
-    public UserEntity createUser(UserDTO user) throws RuntimeException{
+    public UserEntity createUser(UserRequestDTO user) throws RuntimeException{
         UserEntity verification = userRepository.findByName(user.getName());
         if(verification == null){
             UserEntity newUser = UserEntity.builder()
