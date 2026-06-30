@@ -26,8 +26,13 @@ public class UserService {
     private final UserMapper userMapper;
     private final WorkOutService workOutService;
 
-    public List<UserEntity> findAll(){
-         return userRepository.findAll();
+    public List<UserEntity> findAll() throws NotFoundException{
+         List<UserEntity> users = userRepository.findAll();
+
+         if(users.isEmpty())
+             throw new NotFoundException("Don´t exist users on the system");
+         else
+             return users;
     }
 
     public UserEntity findByUserName(String name) throws NotFoundException{
@@ -49,17 +54,11 @@ public class UserService {
     }
 
     public UserResponseDTO findByIdResponse(Long id) throws NotFoundException{
-        UserEntity user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found this User"));
-        return userMapper.userResponseDTO(user);
+        return userMapper.userResponseDTO(findById(id));
     }
 
     public UserResponseDTO findByUserNameResponse(String name) throws NotFoundException{
-        UserEntity user = userRepository.findByName(name);
-
-        if(user != null)
-            return userMapper.userResponseDTO(user);
-        else
-            throw new NotFoundException("Not found this user");
+        return userMapper.userResponseDTO(userRepository.findByName(name));
     }
 
     public UserResponseDTO createUser(UserRequestDTO userRequest){
@@ -73,7 +72,6 @@ public class UserService {
 
         userRepository.save(newUser);
         return userMapper.userResponseDTO(newUser);
-
     }
 
     public UserResponseDTO addWorkOut(UserWorkOutsRequestDTO userRequest) throws NotFoundException{
