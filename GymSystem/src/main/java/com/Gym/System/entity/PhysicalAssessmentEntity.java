@@ -30,5 +30,5 @@ public class PhysicalAssessmentEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private Set<UserEntity> user = new HashSet<>();
+    private UserEntity user;
 }

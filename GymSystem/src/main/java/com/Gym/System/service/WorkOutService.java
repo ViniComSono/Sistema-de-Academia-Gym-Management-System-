@@ -1,9 +1,6 @@
 package com.Gym.System.service;
 
-import com.Gym.System.dto.request.WorkOutExerciseRequestDTO;
-import com.Gym.System.dto.request.WorkOutNameRequestDTO;
-import com.Gym.System.dto.request.WorkOutRequestDTO;
-import com.Gym.System.dto.request.WorkOutUsersRequestDTO;
+import com.Gym.System.dto.request.*;
 import com.Gym.System.dto.response.WorkOutResponseDTO;
 import com.Gym.System.entity.ExerciseEntity;
 import com.Gym.System.entity.UserEntity;
@@ -30,8 +27,13 @@ public class WorkOutService {
     private final UserService userService;
     private final WorkOutMapper workOutMapper;
 
-    public List<WorkOutEntity> findAll(){
-        return workOutRepository.findAll();
+    public List<WorkOutEntity> findAll() throws NotFoundException {
+        List<WorkOutEntity> workOuts = workOutRepository.findAll();
+
+        if(workOuts.isEmpty())
+            throw new NotFoundException("Don´t have any workOut on the system");
+        else
+            return workOuts;
     }
 
     public WorkOutEntity findById(Long id) throws NotFoundException{
@@ -47,8 +49,8 @@ public class WorkOutService {
         }
     }
 
-    public Set<WorkOutResponseDTO> findAllResponse(){
-        Set<WorkOutEntity> workOut = new HashSet<>(workOutRepository.findAll());
+    public Set<WorkOutResponseDTO> findAllResponse() throws NotFoundException{
+        Set<WorkOutEntity> workOut = new HashSet<>(findAll());
         return workOutMapper.workOutResponseSet(workOut);
     }
 
@@ -60,7 +62,7 @@ public class WorkOutService {
     public Set<WorkOutResponseDTO> findByUserIdResponse(Long userId) throws NotFoundException{
         UserEntity user = userService.findById(userId);
         if(user != null){
-            return workOutMapper.workOutResponseSet(workOutRepository.findByUserList_UserId(userId));
+            return workOutMapper.workOutResponseSet(findByUserId(userId));
         }else{
             throw new NotFoundException("Not found this user Id");
         }
@@ -94,13 +96,26 @@ public class WorkOutService {
         }
     }
 
-    public WorkOutResponseDTO editAllWorkOut(WorkOutEntity workOutRequest) throws NotFoundException{
+    public WorkOutResponseDTO editAllWorkOut(WorkOutPutRequestDTO workOutRequest) throws NotFoundException{
         WorkOutEntity workOut = findById(workOutRequest.getWorkOutId());
+        Set<UserEntity> usersList = new HashSet<>();
+        Set<ExerciseEntity> exercisesList = new HashSet<>();
 
         if(workOut != null){
+
+            for(Long userList : workOutRequest.getUserList()){
+                UserEntity users = userService.findById(userList);
+                usersList.add(users);
+            }
+
+            for(Long exerciseList : workOutRequest.getExerciseList()){
+                ExerciseEntity exercise = exerciseService.findByExerciseID(exerciseList);
+                exercisesList.add(exercise);
+            }
+
             workOut.setWorkOutName(workOutRequest.getWorkOutName());
-            workOut.setExerciseList(workOutRequest.getExerciseList());
-            workOut.setUserList(workOutRequest.getUserList());
+            workOut.setUserList(usersList);
+            workOut.setExerciseList(exercisesList);
 
             return workOutMapper.workOutResponse(workOut);
         }else{
