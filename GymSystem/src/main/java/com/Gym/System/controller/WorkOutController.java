@@ -1,7 +1,8 @@
 package com.Gym.System.controller;
 
-import com.Gym.System.dto.request.WorkOutRequestDTO;
-import com.Gym.System.entity.WorkOutEntity;
+import com.Gym.System.dto.request.*;
+import com.Gym.System.dto.response.WorkOutResponseDTO;
+import com.Gym.System.exception.BadRequestException;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.service.WorkOutService;
 import lombok.AllArgsConstructor;
@@ -11,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -25,48 +24,53 @@ public class WorkOutController {
     private final WorkOutService workOutService;
 
     @GetMapping
-    public ResponseEntity<List<WorkOutEntity>> findByAll() throws NotFoundException{
-        return new ResponseEntity<>(workOutService.findByAll(), HttpStatus.FOUND);
+    public ResponseEntity<Set<WorkOutResponseDTO>> findByAll() throws NotFoundException{
+        return new ResponseEntity<>(workOutService.findAllResponse(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/treinoId/{id}")
-    public ResponseEntity<WorkOutEntity> findById(@PathVariable Long id) throws NotFoundException{
-        return new ResponseEntity<>(workOutService.findById(id), HttpStatus.FOUND);
+    public ResponseEntity<WorkOutResponseDTO> findById(@PathVariable Long id) throws NotFoundException{
+        return new ResponseEntity<>(workOutService.findByIdResponse(id), HttpStatus.FOUND);
     }
 
     @GetMapping(value = "/user/{userId}")
-    public ResponseEntity<Set<WorkOutEntity>> findByUserId(@PathVariable Long userId) throws NotFoundException{
-        return new ResponseEntity<>(workOutService.findByUserId(userId), HttpStatus.FOUND);
+    public ResponseEntity<Set<WorkOutResponseDTO>> findByUserId(@PathVariable Long userId) throws NotFoundException{
+        return new ResponseEntity<>(workOutService.findByUserIdResponse(userId), HttpStatus.FOUND);
     }
 
     @PostMapping
-    public ResponseEntity<WorkOutEntity> createWorkOut(@RequestBody WorkOutRequestDTO workOutRequestDTO) throws NotFoundException{
-        return new ResponseEntity<>(workOutService.createWorkOut(workOutRequestDTO), HttpStatus.CREATED);
+    public ResponseEntity<WorkOutResponseDTO> createWorkOut(@RequestBody WorkOutRequestDTO workOutRequest) throws BadRequestException, NotFoundException{
+        return new ResponseEntity<>(workOutService.createWorkOut(workOutRequest), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<WorkOutEntity> editWorkOut(@RequestBody WorkOutPutDTO workOutPutDTO) throws NotFoundException{
-        return new ResponseEntity<>(workOutService.editWorkOut(workOutPutDTO), HttpStatus.CREATED);
+    public ResponseEntity<WorkOutResponseDTO> editWorkOut(@RequestBody WorkOutPutRequestDTO workOutRequest) throws NotFoundException{
+        return new ResponseEntity<>(workOutService.editAllWorkOut(workOutRequest), HttpStatus.CREATED);
+    }
+
+    @PatchMapping(value = "/editName")
+    public ResponseEntity<WorkOutResponseDTO> editWorkOutName(@RequestBody WorkOutNameRequestDTO workOutRequest) throws NotFoundException{
+        return new ResponseEntity<>(workOutService.editWorkOutName(workOutRequest), HttpStatus.OK);
     }
 
     @PatchMapping(value = "/addUser")
-    public ResponseEntity<WorkOutEntity> addWorkOutUser(@RequestBody WorkOutPutDTO workOutPutDTO) throws NotFoundException{
-        return new ResponseEntity<>(workOutService.addWorkOutUsers(workOutPutDTO), HttpStatus.CREATED);
+    public ResponseEntity<WorkOutResponseDTO> addWorkOutUser(@RequestBody WorkOutUsersRequestDTO workOutRequest) throws NotFoundException{
+        return new ResponseEntity<>(workOutService.addWorkOutUsers(workOutRequest), HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/removeUser")
-    public ResponseEntity<WorkOutEntity> removeWorkOutUser(@RequestBody WorkOutPutDTO workOutPutDTO) throws NotFoundException{
-        return new ResponseEntity<>(workOutService.removeWorkOutUsers(workOutPutDTO), HttpStatus.CREATED);
+    public ResponseEntity<WorkOutResponseDTO> removeWorkOutUser(@RequestBody WorkOutUsersRequestDTO workOutRequest) throws NotFoundException{
+        return new ResponseEntity<>(workOutService.removeWorkOutUsers(workOutRequest), HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/addExercise")
-    public ResponseEntity<WorkOutEntity> addExerciseOnWorkOut(@RequestBody WorkOutExercisesDTO workOutListDTO) throws NotFoundException{
-        return new ResponseEntity<>(workOutService.addWorkOutExercise(workOutListDTO), HttpStatus.CREATED);
+    public ResponseEntity<WorkOutResponseDTO> addExerciseOnWorkOut(@RequestBody WorkOutExerciseRequestDTO workOutRequest) throws NotFoundException{
+        return new ResponseEntity<>(workOutService.addWorkOutExercise(workOutRequest), HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/removeExercise")
-    public ResponseEntity<WorkOutEntity> removeExerciseOnWorkOut(@RequestBody WorkOutExercisesDTO workOutListDTO) throws NotFoundException{
-        return new ResponseEntity<>(workOutService.removeWorkOutExercise(workOutListDTO), HttpStatus.CREATED);
+    public ResponseEntity<WorkOutResponseDTO> removeExerciseOnWorkOut(@RequestBody WorkOutExerciseRequestDTO workOutRequest) throws NotFoundException{
+        return new ResponseEntity<>(workOutService.removeWorkOutExercise(workOutRequest), HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/{id}")

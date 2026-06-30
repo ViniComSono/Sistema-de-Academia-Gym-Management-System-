@@ -11,11 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
-
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -23,7 +20,6 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
-
 public class ExerciseService {
 
     private final ExerciseRepository exercicioRepository;
