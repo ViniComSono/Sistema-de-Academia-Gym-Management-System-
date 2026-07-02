@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequest) throws NotFoundException {
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequest){
         return new ResponseEntity<>(userService.createUser(userRequest), HttpStatus.CREATED);
     }
 
@@ -65,5 +65,11 @@ public class UserController {
     @PatchMapping(value = "/editUserCharacteristics")
     public ResponseEntity<UserResponseDTO> editUserCharacteristics(@RequestBody UserCharacteristicsRequestDTO userRequest) throws NotFoundException {
         return new ResponseEntity<>(userService.editUserCharacteristics(userRequest), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/delete/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) throws NotFoundException{
+        userService.deleteUser(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

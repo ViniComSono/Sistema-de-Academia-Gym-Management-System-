@@ -61,8 +61,7 @@ public class UserService {
         return userMapper.userResponseDTO(findByUserName(name));
     }
 
-    public UserResponseDTO createUser(UserRequestDTO userRequest) throws NotFoundException{
-        findByUserName(userRequest.getName());
+    public UserResponseDTO createUser(UserRequestDTO userRequest){
 
         UserEntity newUser = UserEntity.builder()
                 .name(userRequest.getName())
@@ -135,5 +134,10 @@ public class UserService {
 
         userRepository.save(user);
         return userMapper.userResponseDTO(user);
+    }
+
+    public void deleteUser(Long userId) throws NotFoundException{
+        UserEntity user = findById(userId);
+        userRepository.delete(user);
     }
 }

@@ -20,7 +20,7 @@ public class GlobalHandlerException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(error);
     }
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> handlerBadRequestException(BadRequestException exception){
         ErrorResponse error = ErrorResponse.builder()
                 .message(exception.getMessage())

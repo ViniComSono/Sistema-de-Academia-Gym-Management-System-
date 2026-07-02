@@ -32,7 +32,7 @@ public class UserEntity {
     @Builder.Default
     private Set<PhysicalAssessmentEntity> assessementList = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "userList")
+    @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "userList")
     @Builder.Default
     private Set<WorkOutEntity> workOutList = new HashSet<>();
 }
