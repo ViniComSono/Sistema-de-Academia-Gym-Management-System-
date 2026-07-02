@@ -32,7 +32,7 @@ public class WorkOutEntity {
     @Builder.Default
     private Set<ExerciseEntity> exerciseList = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany()
     @JoinTable(
             name = "workout_user",
             joinColumns = @JoinColumn(name = "user_id"),
