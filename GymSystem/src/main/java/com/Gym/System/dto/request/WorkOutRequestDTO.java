@@ -1,8 +1,6 @@
 package com.Gym.System.dto.request;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
 import java.util.*;
 
 @Getter

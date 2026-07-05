@@ -2,10 +2,7 @@ package com.Gym.System.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -28,7 +25,7 @@ public class PhysicalAssessmentEntity {
     @Column(name = "calorias_diarias")
     private BigDecimal caloriasDiarias;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "user_id")
     private UserEntity user;
 }

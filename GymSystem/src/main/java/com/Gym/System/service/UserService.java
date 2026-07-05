@@ -138,6 +138,11 @@ public class UserService {
 
     public void deleteUser(Long userId) throws NotFoundException{
         UserEntity user = findById(userId);
+
+        for(WorkOutEntity workOut : user.getWorkOutList()){
+            workOut.getUserList().remove(user);
+        }
+
         userRepository.delete(user);
     }
 }
