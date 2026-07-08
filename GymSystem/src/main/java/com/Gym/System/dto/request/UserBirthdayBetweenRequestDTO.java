@@ -2,32 +2,24 @@ package com.Gym.System.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.math.BigDecimal;
+
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequestDTO {
-
-    @NotBlank
-    private String name;
+public class UserBirthdayBetweenRequestDTO {
 
     @NotBlank
     @JsonFormat(pattern = "dd/MM/YYYY")
-    private LocalDate birthday;
+    private LocalDate dateOne;
 
-    @NotNull
-    private BigDecimal weight;
-    @NotNull
-    private BigDecimal height;
-
-    //String email;
-    //String password;
+    @NotBlank
+    @JsonFormat(pattern = "dd/MM/YYYY")
+    private LocalDate dateTwo;
 }
