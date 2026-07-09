@@ -22,11 +22,11 @@ import java.util.Set;
 @Setter
 public class ExerciseService {
 
-    private final ExerciseRepository exercicioRepository;
+    private final ExerciseRepository exerciseRepository;
     private final ExerciseMapper exerciseMapper;
 
     public Set<ExerciseEntity> findAll() throws NotFoundException {
-        Set<ExerciseEntity> list = new HashSet<>(exercicioRepository.findAll());
+        Set<ExerciseEntity> list = new HashSet<>(exerciseRepository.findAll());
 
         if(list.isEmpty())
             throw new NotFoundException("Those aren´t any exercise on the system");
@@ -35,11 +35,11 @@ public class ExerciseService {
     }
 
     public ExerciseEntity findByExerciseID(Long id) throws NotFoundException{
-        return exercicioRepository.findById(id).orElseThrow(() -> new NotFoundException("Exercise not found"));
+        return exerciseRepository.findById(id).orElseThrow(() -> new NotFoundException("Exercise not found"));
     }
 
     public ExerciseEntity findByExerciseNameIgnoreCase(String name) throws NotFoundException{
-        ExerciseEntity exercise = exercicioRepository.findByExerciseNameIgnoreCase(name);
+        ExerciseEntity exercise = exerciseRepository.findByExerciseNameIgnoreCase(name);
 
        if(exercise != null)
            return exercise;
@@ -48,7 +48,7 @@ public class ExerciseService {
     }
 
     public Set<ExerciseEntity> findByMuscleGroupIgnoreCase(String muscleGroup) throws NotFoundException{
-        Set<ExerciseEntity> exerciseList = new HashSet<>(exercicioRepository.findByMuscleGroupIgnoreCase(muscleGroup));
+        Set<ExerciseEntity> exerciseList = new HashSet<>(exerciseRepository.findByMuscleGroupIgnoreCase(muscleGroup));
 
         if(exerciseList.isEmpty())
             throw new NotFoundException("This user don´t exist on the system");
@@ -73,14 +73,14 @@ public class ExerciseService {
     }
 
     public ExerciseResponseDTO createExercicio(ExerciseRequestDTO exerciseRequest) throws BadRequestException {
-        ExerciseEntity verification = exercicioRepository.findByExerciseNameIgnoreCase(exerciseRequest.getExerciseName());
+        ExerciseEntity verification = exerciseRepository.findByExerciseNameIgnoreCase(exerciseRequest.getExerciseName());
 
         if(verification == null){
             ExerciseEntity exercise = ExerciseEntity.builder()
                     .exerciseName(exerciseRequest.getExerciseName())
                     .muscleGroup(exerciseRequest.getMuscleGroup())
                     .build();
-            exercicioRepository.save(exercise);
+            exerciseRepository.save(exercise);
             return exerciseMapper.exerciseResponse(exercise);
         }else{
             throw new BadRequestException("This Exercise exist on the System");
@@ -89,6 +89,6 @@ public class ExerciseService {
 
     public void removeExercise(Long id) throws NotFoundException{
         ExerciseEntity exercise = findByExerciseID(id);
-        exercicioRepository.delete(exercise);
+        exerciseRepository.delete(exercise);
     }
 }

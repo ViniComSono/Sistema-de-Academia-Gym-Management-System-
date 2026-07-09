@@ -16,14 +16,11 @@ public class PhysicalAssessmentEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
 
-    @Column(name = "percentual_gordura")
-    private BigDecimal percentualGordura;
+    private BigDecimal weight;
+    private BigDecimal height;
 
-    @Column(name = "percentual_massa_magra")
-    private BigDecimal percentualMasseMagra;
-
-    @Column(name = "calorias_diarias")
-    private BigDecimal caloriasDiarias;
+    @Column(name = "body_fat_percentage")
+    private BigDecimal bodyFatPercentage;
 
     @ManyToOne()
     @JoinColumn(name = "user_id")

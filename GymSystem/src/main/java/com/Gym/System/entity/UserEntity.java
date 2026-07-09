@@ -1,5 +1,6 @@
 package com.Gym.System.entity;
 
+import com.Gym.System.enums.SexUser;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,9 +28,12 @@ public class UserEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "sex_user")
+    @Enumerated(EnumType.STRING)
+    private SexUser sexUser;
+
     private LocalDate birthday;
-    private BigDecimal weight;
-    private BigDecimal height;
+
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     @Builder.Default

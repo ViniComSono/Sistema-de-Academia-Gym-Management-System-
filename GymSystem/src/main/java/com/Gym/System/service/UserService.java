@@ -147,9 +147,8 @@ public class UserService {
 
         UserEntity newUser = UserEntity.builder()
                 .name(userRequest.getName())
+                .sexUser(userRequest.getSexUser())
                 .birthday(userRequest.getBirthday())
-                .weight(userRequest.getWeight())
-                .height(userRequest.getHeight())
                 .build();
 
         userRepository.save(newUser);
@@ -169,9 +168,8 @@ public class UserService {
              */
 
         user.setName(userRequest.getName());
+        user.setSexUser(userRequest.getSexUser());
         user.setBirthday(userRequest.getBirthday());
-        user.setWeight(userRequest.getWeight());
-        user.setHeight(userRequest.getHeight());
         user.setWorkOutList(workOutSet);
 
         userRepository.save(user);return
@@ -205,16 +203,6 @@ public class UserService {
     public UserResponseDTO editNameUser(UserNameRequestDTO userRequest) throws NotFoundException{
         UserEntity user = findById(userRequest.getUserId());
         user.setName(userRequest.getName());
-
-        userRepository.save(user);
-        return userMapper.userResponseDTO(user);
-    }
-
-    public UserResponseDTO editUserCharacteristics(UserCharacteristicsRequestDTO userRequest) throws NotFoundException{
-        UserEntity user = findById(userRequest.getUserId());
-
-        user.setWeight(userRequest.getWeight());
-        user.setHeight(userRequest.getHeight());
 
         userRepository.save(user);
         return userMapper.userResponseDTO(user);

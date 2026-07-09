@@ -1,21 +1,17 @@
 package com.Gym.System.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.Entity;
+import lombok.*;
 import java.math.BigDecimal;
-
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Entity
 @AllArgsConstructor
-public class UserCharacteristicsRequestDTO{
+@NoArgsConstructor
+public class AssessmentRequestDTO {
 
     private Long userId;
     private BigDecimal weight;
     private BigDecimal height;
 }
-
-
