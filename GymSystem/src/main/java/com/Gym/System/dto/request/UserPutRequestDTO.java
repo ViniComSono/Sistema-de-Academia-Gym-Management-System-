@@ -1,11 +1,14 @@
 package com.Gym.System.dto.request;
 
+import com.Gym.System.enums.SexUser;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,15 +20,14 @@ import java.util.Set;
 public class UserPutRequestDTO {
 
     private Long userId;
-    //String email;
-    //String password;
     private String name;
+
+    @NotBlank
+    private SexUser sexUser;
 
     @JsonFormat(pattern = "dd/MM/YYYY")
     private LocalDate birthday;
 
-    private BigDecimal weight;
-    private BigDecimal height;
     private Set<Long> assessementIdList = new HashSet<>();
     private Set<Long> workOutIdList = new HashSet<>();
 

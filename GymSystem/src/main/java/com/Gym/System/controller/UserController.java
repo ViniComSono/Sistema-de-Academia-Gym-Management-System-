@@ -62,11 +62,6 @@ public class UserController {
         return new ResponseEntity<>(userService.editNameUser(userRequest), HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/editUserCharacteristics")
-    public ResponseEntity<UserResponseDTO> editUserCharacteristics(@RequestBody UserCharacteristicsRequestDTO userRequest) throws NotFoundException {
-        return new ResponseEntity<>(userService.editUserCharacteristics(userRequest), HttpStatus.OK);
-    }
-
     @DeleteMapping(value = "/delete/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) throws NotFoundException{
         userService.deleteUser(userId);

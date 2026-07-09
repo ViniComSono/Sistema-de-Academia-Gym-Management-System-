@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PhysicalAssessmentRepository extends JpaRepository<PhysicalAssessmentEntity, Long> {
-    public PhysicalAssessmentEntity findByUser(UserEntity user);
+    public PhysicalAssessmentEntity findByUser_UserId(Long user);
+
 }
