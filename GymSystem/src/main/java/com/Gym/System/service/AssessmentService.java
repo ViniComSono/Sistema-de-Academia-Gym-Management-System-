@@ -70,6 +70,20 @@ public class AssessmentService{
         return assessmentMapper.assessmentResponse(findByUserId(userId));
     }
 
+    public BigDecimal calculateBodyFat (AssessmentRequestDTO assessmentRequest) throws NotFoundException{
+        UserEntity user = userRepository.findById(assessmentRequest.getUserId()).orElseThrow(() -> new NotFoundException("This user Id don't exist"));
+
+        int age = Period.between(user.getBirthday() , LocalDate.now()).getYears();
+        BigDecimal imc = assessmentRequest.getWeight().divide(assessmentRequest.getWeight().pow(2), 2, RoundingMode.HALF_UP);
+        BigDecimal bodyFat;
+
+        if(user.getSexUser() == SexUser.MALE){
+            return bodyFat = (imc.multiply(BigDecimal.valueOf(1.20))).add(BigDecimal.valueOf((age * 0.23) - 16.2));
+        }else{
+            return bodyFat = (imc.multiply(BigDecimal.valueOf(1.20))).add(BigDecimal.valueOf((age * 0.23) - 5.2));
+        }
+    }
+
     public AssessmentResponseDTO createPhysicalAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
         UserEntity user = userRepository.findById(assessmentRequest.getUserId()).orElseThrow(() -> new NotFoundException("This user Id don't exist"));
 
@@ -97,6 +111,18 @@ public class AssessmentService{
     }
 
     //Colocar Path e Put, adicionar data de criação, e algumas outras funcionalidades para brincar um pouco
+
+    //deixar na API, mas nãao vejo necessidade de deixar isso 100% explicito também
+    public AssessmentResponseDTO editAllAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
+        PhysicalAssessmentEntity assessment = findByUserId(assessmentRequest.getUserId());
+        
+        assessment.setHeight(assessmentRequest.getHeight());
+        assessment.setWeight(assessmentRequest.getWeight());
+        assessment.setBodyFatPercentage(calculateBodyFat(assessmentRequest));
+        assessmentRepository.save(assessment);
+
+        return assessmentMapper.assessmentResponse(assessment);
+    }
 
     public void deleteAssessment(Long id) throws NotFoundException{
         assessmentRepository.delete(findById(id));
