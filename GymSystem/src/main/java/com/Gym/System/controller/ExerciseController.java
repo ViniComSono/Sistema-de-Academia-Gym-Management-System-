@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 
 
@@ -23,7 +22,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @RequestMapping(value = "/exercise")
-public class ExerciseControler {
+public class ExerciseController {
 
     private final ExerciseService exerciseService;
 
