@@ -1,5 +1,6 @@
 package com.Gym.System.controller;
 
+import com.Gym.System.dto.request.AssessmentRequestDTO;
 import com.Gym.System.dto.response.AssessmentResponseDTO;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.service.AssessmentService;
@@ -9,11 +10,9 @@ import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.spi.ServiceRegistry;
 import java.util.List;
 import java.util.Set;
 
@@ -39,5 +38,15 @@ public class PhysicalAssessmentController {
     @GetMapping(value = "/user_id/{id}")
     public ResponseEntity<AssessmentResponseDTO> findByUserId(@PathVariable Long id) throws NotFoundException{
         return new ResponseEntity<>(assessmentService.findByIdResponse(id), HttpStatus.FOUND);
+    }
+
+    @PostMapping
+    public ResponseEntity<AssessmentResponseDTO> creatPhysicalAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
+        return new ResponseEntity<>(assessmentService.createPhysicalAssessment(assessmentRequest), HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<AssessmentResponseDTO> editAllPhysicalAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
+        return new ResponseEntity<>(assessmentService.editAllAssessment(assessmentRequest), HttpStatus.OK);
     }
 }
