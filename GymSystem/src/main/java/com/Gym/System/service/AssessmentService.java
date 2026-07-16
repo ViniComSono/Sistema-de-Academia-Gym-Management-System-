@@ -70,21 +70,7 @@ public class AssessmentService{
         return assessmentMapper.assessmentResponse(findByUserId(userId));
     }
 
-    public BigDecimal calculateBodyFat (AssessmentRequestDTO assessmentRequest) throws NotFoundException{
-        UserEntity user = userRepository.findById(assessmentRequest.getUserId()).orElseThrow(() -> new NotFoundException("This user Id don't exist"));
-
-        int age = Period.between(user.getBirthday() , LocalDate.now()).getYears();
-        BigDecimal imc = assessmentRequest.getWeight().divide(assessmentRequest.getWeight().pow(2), 2, RoundingMode.HALF_UP);
-        BigDecimal bodyFat;
-
-        if(user.getSexUser() == SexUser.MALE){
-            return bodyFat = (imc.multiply(BigDecimal.valueOf(1.20))).add(BigDecimal.valueOf((age * 0.23) - 16.2));
-        }else{
-            return bodyFat = (imc.multiply(BigDecimal.valueOf(1.20))).add(BigDecimal.valueOf((age * 0.23) - 5.2));
-        }
-    }
-
-    public AssessmentResponseDTO createPhysicalAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
+    /*public AssessmentResponseDTO createPhysicalAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
         UserEntity user = userRepository.findById(assessmentRequest.getUserId()).orElseThrow(() -> new NotFoundException("This user Id don't exist"));
 
          if(findByUserId(assessmentRequest.getUserId()) != null)
@@ -117,5 +103,5 @@ public class AssessmentService{
 
     public void deleteAssessment(Long id) throws NotFoundException{
         assessmentRepository.delete(findById(id));
-    }
+    }*/
 }
