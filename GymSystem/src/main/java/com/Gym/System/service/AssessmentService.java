@@ -90,16 +90,7 @@ public class AssessmentService{
          if(findByUserId(assessmentRequest.getUserId()) != null)
              assessmentRepository.delete(findByUserId(assessmentRequest.getUserId()));
 
-
-        int age = Period.between(user.getBirthday() , LocalDate.now()).getYears();
-        BigDecimal imc = assessmentRequest.getWeight().divide(assessmentRequest.getWeight().pow(2), 2, RoundingMode.HALF_UP);
-        BigDecimal bodyFat;
-
-        if(user.getSexUser() == SexUser.MALE){
-            bodyFat = (imc.multiply(BigDecimal.valueOf(1.20))).add(BigDecimal.valueOf((age * 0.23) - 16.2));
-        }else{
-            bodyFat = (imc.multiply(BigDecimal.valueOf(1.20))).add(BigDecimal.valueOf((age * 0.23) - 5.2));
-        }
+        BigDecimal bodyFat = calculateBodyFat(assessmentRequest);
 
         PhysicalAssessmentEntity assessment = PhysicalAssessmentEntity.builder()
                 .user(user)
