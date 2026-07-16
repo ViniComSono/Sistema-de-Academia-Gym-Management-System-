@@ -1,9 +1,9 @@
 package com.Gym.System.dto.request;
 
 import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
 import java.math.BigDecimal;
 
 @Getter
@@ -12,10 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AssessmentRequestDTO {
-
-    @NotNull
-    private Long userId;
+public class AssessmentCharacteristicsRequestDTO {
     @NotNull
     private BigDecimal weight;
     @NotNull

@@ -30,6 +30,18 @@ public class PhysicalAssessmentEntity {
     @Enumerated(EnumType.STRING)
     private Imc imcType;
 
+    @Column(name = "fat_mass")
+    private BigDecimal FatMass;
+
+    @Column(name = "body_mass")
+    private BigDecimal BodyMass;
+
+    @Column(name = "basal_metabolic_rate")
+    private BigDecimal BasalMetabolicRate;
+
+    @Column(name = "all_daily_energy_expenditure")
+    private BigDecimal AllDailyEnergyExpenditure;
+
     @ManyToOne()
     @JoinColumn(name = "user_id")
     private UserEntity user;

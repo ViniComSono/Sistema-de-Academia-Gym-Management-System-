@@ -1,7 +1,10 @@
 package com.Gym.System.util;
 
+import com.Gym.System.dto.request.AssessmentCharacteristicsRequestDTO;
+import com.Gym.System.dto.request.AssessmentPhysicalFrequencyRequestDTO;
 import com.Gym.System.dto.request.AssessmentRequestDTO;
 import com.Gym.System.entity.UserEntity;
+import com.Gym.System.enums.Imc;
 import com.Gym.System.enums.SexUser;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.repository.UserRepository;
@@ -23,15 +26,36 @@ public class PhysicalAssessmentCalculator {
 
     private final UserRepository userRepository;
 
-    public BigDecimal calculateImc (AssessmentRequestDTO assessmentRequest) throws NotFoundException{
+    public BigDecimal calculateImc (AssessmentCharacteristicsRequestDTO assessmentRequest) throws NotFoundException{
         return assessmentRequest.getWeight().divide(assessmentRequest.getWeight().pow(2), 2, RoundingMode.HALF_UP);
     }
 
+    public Imc imcType (BigDecimal imc){
+        double imcDouble = imc.doubleValue();
+        if(imcDouble <= 18.5){
+            return Imc.underWeight;
+        }else if(imcDouble <= 24.9){
+            return Imc.normalWeight;
+        }else if(imcDouble <= 29.9){
+            return Imc.overWeight;
+        }else if(imcDouble <= 34.9){
+            return Imc.ClassIObesity;
+        }else if(imcDouble <= 39.9){
+            return Imc.ClassIIObesity;
+        }else{
+            return Imc.ClassIIIObesity;
+        }
+    }
 
     public BigDecimal calculateBodyFat (AssessmentRequestDTO assessmentRequest) throws NotFoundException {
         UserEntity user = userRepository.findById(assessmentRequest.getUserId()).orElseThrow(() -> new NotFoundException("This user Id don't exist"));
 
-        BigDecimal imc = calculateImc(assessmentRequest);
+        BigDecimal imc = calculateImc(
+                AssessmentCharacteristicsRequestDTO.builder()
+                        .height(assessmentRequest.getHeight())
+                        .weight(assessmentRequest.getWeight())
+                        .build());
+
         int age = Period.between(user.getBirthday() , LocalDate.now()).getYears();
         double genderParam;
 
@@ -54,7 +78,7 @@ public class PhysicalAssessmentCalculator {
         return assessmentRequest.getWeight().subtract(calculateFatMass(assessmentRequest));
     }
 
-    public BigDecimal calculateMetabolicBasal (AssessmentRequestDTO assessmentRequest) throws NotFoundException {
+    public BigDecimal calculateBasalMetabolicRate (AssessmentRequestDTO assessmentRequest) throws NotFoundException {
         UserEntity user = userRepository.findById(assessmentRequest.getUserId()).orElseThrow(() -> new NotFoundException("This user Id don't exist"));
 
         int age = Period.between(user.getBirthday() , LocalDate.now()).getYears();
@@ -74,5 +98,15 @@ public class PhysicalAssessmentCalculator {
                 .add(BigDecimal.valueOf(genderParam));
     }
 
-    //TERMINAR OUTROS
+    public BigDecimal calculateAllDailyEnergyExpenditure(AssessmentPhysicalFrequencyRequestDTO assessmentRequest) throws NotFoundException{
+        AssessmentRequestDTO tmbBuild = AssessmentRequestDTO.builder()
+                .userId(assessmentRequest.getUserId())
+                .height(assessmentRequest.getHeight())
+                .weight(assessmentRequest.getWeight())
+                .build();
+
+        BigDecimal tmb = calculateBasalMetabolicRate(tmbBuild);
+
+        return tmb.add(BigDecimal.valueOf(assessmentRequest.getPhysicalActivityFrequency().getFactor()));
+    }
 }
