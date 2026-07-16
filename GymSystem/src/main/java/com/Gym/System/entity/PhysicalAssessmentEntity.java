@@ -1,5 +1,6 @@
 package com.Gym.System.entity;
 
+import com.Gym.System.enums.Imc;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -21,6 +22,13 @@ public class PhysicalAssessmentEntity {
 
     @Column(name = "body_fat_percentage")
     private BigDecimal bodyFatPercentage;
+
+    @Column(name = "body_mass_index")
+    private BigDecimal imc;
+
+    @Column(name = "imc_type")
+    @Enumerated(EnumType.STRING)
+    private Imc imcType;
 
     @ManyToOne()
     @JoinColumn(name = "user_id")

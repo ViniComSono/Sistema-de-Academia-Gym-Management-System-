@@ -1,4 +1,5 @@
 package com.Gym.System.dto.response;
+import com.Gym.System.enums.Imc;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -13,6 +14,8 @@ public class AssessmentResponseDTO {
     private Long Id;
     private BigDecimal weight;
     private BigDecimal height;
-    private Double bodyFatPercentage;
+    private BigDecimal bodyFatPercentage;
+    private BigDecimal imc;
+    private Imc imcType;
     private UserSummaryResponseDTO user;
 }
