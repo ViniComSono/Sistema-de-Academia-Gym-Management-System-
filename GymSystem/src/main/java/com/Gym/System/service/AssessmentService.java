@@ -1,5 +1,6 @@
 package com.Gym.System.service;
 
+import com.Gym.System.dto.request.AssessmentCharacteristicsRequestDTO;
 import com.Gym.System.dto.request.AssessmentRequestDTO;
 import com.Gym.System.dto.response.AssessmentResponseDTO;
 import com.Gym.System.entity.PhysicalAssessmentEntity;
@@ -9,6 +10,7 @@ import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.mapper.AssessmentMapper;
 import com.Gym.System.repository.PhysicalAssessmentRepository;
 import com.Gym.System.repository.UserRepository;
+import com.Gym.System.util.PhysicalAssessmentCalculator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +34,7 @@ public class AssessmentService{
     private final PhysicalAssessmentRepository assessmentRepository;
     private final AssessmentMapper assessmentMapper;
     private final UserRepository userRepository;
+    private final PhysicalAssessmentCalculator physicalCalculator;
 
     public List<PhysicalAssessmentEntity> findByAll() throws NotFoundException{
         List<PhysicalAssessmentEntity> assessments = assessmentRepository.findAll();
@@ -46,14 +50,21 @@ public class AssessmentService{
         return assessmentRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found any assessment with this Id"));
     }
 
-    public PhysicalAssessmentEntity findByUserId(Long userId) throws NotFoundException{
-        PhysicalAssessmentEntity assessment = assessmentRepository.findByUser_UserId(userId);
+    public List<PhysicalAssessmentEntity> findByUserId(Long userId) throws NotFoundException{
+        List<PhysicalAssessmentEntity> assessments = assessmentRepository.findByUser_UserId(userId);
+        assessments.sort(Comparator.comparing(PhysicalAssessmentEntity::getDate).reversed());
 
-        if(assessment == null){
+        if(assessments.isEmpty()){
             throw new NotFoundException("Don't exist any Assessment for this user on the system");
         }else{
-            return assessment;
+            return assessments;
         }
+    }
+
+    public PhysicalAssessmentEntity findByMostRecentAssessmentUserId(Long id) throws NotFoundException{
+        List<PhysicalAssessmentEntity> assessments = findByUserId(id);
+        
+        return assessments.getFirst();
     }
 
     public Set<AssessmentResponseDTO> findByAllResponse() throws NotFoundException{
@@ -66,8 +77,31 @@ public class AssessmentService{
         return assessmentMapper.assessmentResponse(findById(id));
     }
 
-    public AssessmentResponseDTO findByUserIdResponse(Long userId) throws NotFoundException{
-        return assessmentMapper.assessmentResponse(findByUserId(userId));
+   // public AssessmentResponseDTO findByUserIdResponse(Long userId) throws NotFoundException{
+    //    return assessmentMapper.assessmentResponse(findByUserId(userId));
+    //}
+
+    public AssessmentResponseDTO createPhysicalAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
+        UserEntity user = userRepository.findById(assessmentRequest.getUserId()).orElseThrow(() -> new NotFoundException("This user don't exist"));
+        AssessmentCharacteristicsRequestDTO characteristicsRequest = AssessmentCharacteristicsRequestDTO.builder()
+                .weight(assessmentRequest.getWeight())
+                .height(assessmentRequest.getHeight())
+                .build();
+
+        PhysicalAssessmentEntity physicalAssessment = PhysicalAssessmentEntity.builder()
+                .weight(assessmentRequest.getWeight())
+                .height(assessmentRequest.getHeight())
+                .bodyFatPercentage(physicalCalculator.calculateBodyFat(assessmentRequest))
+                .imc(physicalCalculator.calculateImc(characteristicsRequest))
+                .imcType(physicalCalculator.imcType(physicalCalculator.calculateImc(characteristicsRequest)))
+                .FatMass(physicalCalculator.calculateFatMass(assessmentRequest))
+                .BodyMass(physicalCalculator.calculateLeanBodyMass(assessmentRequest))
+                .BasalMetabolicRate(physicalCalculator.calculateBasalMetabolicRate(assessmentRequest))
+                .AllDailyEnergyExpenditure(physicalCalculator.calculateAllDailyEnergyExpenditure(assessmentRequest))
+                .build();
+
+        assessmentRepository.save(physicalAssessment);
+        return assessmentMapper.assessmentResponse(physicalAssessment);
     }
 
     /*public AssessmentResponseDTO createPhysicalAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{

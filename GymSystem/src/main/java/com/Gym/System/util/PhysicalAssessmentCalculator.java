@@ -1,7 +1,6 @@
 package com.Gym.System.util;
 
 import com.Gym.System.dto.request.AssessmentCharacteristicsRequestDTO;
-import com.Gym.System.dto.request.AssessmentPhysicalFrequencyRequestDTO;
 import com.Gym.System.dto.request.AssessmentRequestDTO;
 import com.Gym.System.entity.UserEntity;
 import com.Gym.System.enums.Imc;
@@ -98,7 +97,7 @@ public class PhysicalAssessmentCalculator {
                 .add(BigDecimal.valueOf(genderParam));
     }
 
-    public BigDecimal calculateAllDailyEnergyExpenditure(AssessmentPhysicalFrequencyRequestDTO assessmentRequest) throws NotFoundException{
+    public BigDecimal calculateAllDailyEnergyExpenditure(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
         AssessmentRequestDTO tmbBuild = AssessmentRequestDTO.builder()
                 .userId(assessmentRequest.getUserId())
                 .height(assessmentRequest.getHeight())
