@@ -17,5 +17,9 @@ public class AssessmentResponseDTO {
     private BigDecimal bodyFatPercentage;
     private BigDecimal imc;
     private Imc imcType;
+    private BigDecimal FatMass;
+    private BigDecimal BodyMass;
+    private BigDecimal BasalMetabolicRate;
+    private BigDecimal AllDailyEnergyExpenditure;
     private UserSummaryResponseDTO user;
 }

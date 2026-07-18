@@ -4,6 +4,7 @@ import com.Gym.System.enums.Imc;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -16,6 +17,8 @@ public class PhysicalAssessmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
+
+    private LocalDate date;
 
     private BigDecimal weight;
     private BigDecimal height;
