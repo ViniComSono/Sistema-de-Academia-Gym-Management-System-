@@ -17,6 +17,6 @@ public class UserResponseDTO {
     private String name;
     private SexUser sexUser;
     private LocalDate birthday;
-    private Set<PhysicalAssessmentEntity> assessementList = new HashSet<>();
+    private Set<PhysicalAssessmentEntity> assessmentList = new HashSet<>();
     private Set<WorkOutSummaryResponseDTO> workOutList = new HashSet<>();
 }

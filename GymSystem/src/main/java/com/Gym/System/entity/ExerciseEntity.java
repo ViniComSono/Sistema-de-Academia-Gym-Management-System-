@@ -20,6 +20,7 @@ public class ExerciseEntity {
 
     @Column(nullable = false, unique = true, name = "exercise_name")
     private String exerciseName;
+
     @Column(nullable = false, name = "muscle_group")
     private String muscleGroup;
 }
