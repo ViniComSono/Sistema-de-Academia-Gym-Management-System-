@@ -5,7 +5,6 @@ import com.Gym.System.dto.request.AssessmentRequestDTO;
 import com.Gym.System.dto.response.AssessmentResponseDTO;
 import com.Gym.System.entity.PhysicalAssessmentEntity;
 import com.Gym.System.entity.UserEntity;
-import com.Gym.System.enums.SexUser;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.mapper.AssessmentMapper;
 import com.Gym.System.repository.PhysicalAssessmentRepository;
@@ -16,10 +15,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +33,7 @@ public class AssessmentService{
 
     public List<PhysicalAssessmentEntity> findByAll() throws NotFoundException{
         List<PhysicalAssessmentEntity> assessments = assessmentRepository.findAll();
+        assessments.sort(Comparator.comparing(PhysicalAssessmentEntity::getDate).reversed());
 
         if(assessments.isEmpty()){
             throw new NotFoundException("Any assessment created on the system");
@@ -77,9 +73,10 @@ public class AssessmentService{
         return assessmentMapper.assessmentResponse(findById(id));
     }
 
-   // public AssessmentResponseDTO findByUserIdResponse(Long userId) throws NotFoundException{
-    //    return assessmentMapper.assessmentResponse(findByUserId(userId));
-    //}
+    public Set<AssessmentResponseDTO> findByUserIdResponse(Long userId) throws NotFoundException{
+        Set<PhysicalAssessmentEntity> assessmentEntitySet = new HashSet<>(findByUserId(userId));
+        return assessmentMapper.assessmentResponse(assessmentEntitySet);
+    }
 
     public AssessmentResponseDTO createPhysicalAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
         UserEntity user = userRepository.findById(assessmentRequest.getUserId()).orElseThrow(() -> new NotFoundException("This user don't exist"));
@@ -100,42 +97,19 @@ public class AssessmentService{
                 .AllDailyEnergyExpenditure(physicalCalculator.calculateAllDailyEnergyExpenditure(assessmentRequest))
                 .build();
 
+        user.getAssessementList().add(physicalAssessment);
+        userRepository.save(user);
+
         assessmentRepository.save(physicalAssessment);
         return assessmentMapper.assessmentResponse(physicalAssessment);
     }
 
-    /*public AssessmentResponseDTO createPhysicalAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
-        UserEntity user = userRepository.findById(assessmentRequest.getUserId()).orElseThrow(() -> new NotFoundException("This user Id don't exist"));
-
-         if(findByUserId(assessmentRequest.getUserId()) != null)
-             assessmentRepository.delete(findByUserId(assessmentRequest.getUserId()));
-
-        BigDecimal bodyFat = calculateBodyFat(assessmentRequest);
-
-        PhysicalAssessmentEntity assessment = PhysicalAssessmentEntity.builder()
-                .user(user)
-                .weight(assessmentRequest.getWeight())
-                .height(assessmentRequest.getHeight())
-                .bodyFatPercentage(bodyFat)
-                .build();
-        return assessmentMapper.assessmentResponse(assessment);
+    public void deleteByAssessmentId(Long id) throws NotFoundException{
+        PhysicalAssessmentEntity assessment = findById(id);
+        assessmentRepository.delete(assessment);
     }
 
     //Colocar Path e Put, adicionar data de criação, e algumas outras funcionalidades para brincar um pouco
 
     //deixar na API, mas nãao vejo necessidade de deixar isso 100% explicito também
-    public AssessmentResponseDTO editAllAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
-        PhysicalAssessmentEntity assessment = findByUserId(assessmentRequest.getUserId());
-        
-        assessment.setHeight(assessmentRequest.getHeight());
-        assessment.setWeight(assessmentRequest.getWeight());
-        assessment.setBodyFatPercentage(calculateBodyFat(assessmentRequest));
-        assessmentRepository.save(assessment);
-
-        return assessmentMapper.assessmentResponse(assessment);
-    }
-
-    public void deleteAssessment(Long id) throws NotFoundException{
-        assessmentRepository.delete(findById(id));
-    }*/
 }

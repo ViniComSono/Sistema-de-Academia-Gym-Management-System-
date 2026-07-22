@@ -6,6 +6,7 @@ import com.Gym.System.entity.UserEntity;
 import com.Gym.System.entity.WorkOutEntity;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.mapper.UserMapper;
+import com.Gym.System.repository.PhysicalAssessmentRepository;
 import com.Gym.System.repository.UserRepository;
 import lombok.*;
 import org.springframework.stereotype.Service;

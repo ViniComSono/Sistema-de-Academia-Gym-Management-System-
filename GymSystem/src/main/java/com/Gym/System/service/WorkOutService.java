@@ -9,6 +9,7 @@ import com.Gym.System.exception.BadRequestException;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.mapper.WorkOutMapper;
 import com.Gym.System.repository.ExerciseRepository;
+import com.Gym.System.repository.PhysicalAssessmentRepository;
 import com.Gym.System.repository.UserRepository;
 import com.Gym.System.repository.WorkOutRepository;
 import lombok.AllArgsConstructor;
