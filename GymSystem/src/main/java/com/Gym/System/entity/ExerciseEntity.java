@@ -9,7 +9,6 @@ import lombok.*;
 @Table(name = "exercise")
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class ExerciseEntity {
 

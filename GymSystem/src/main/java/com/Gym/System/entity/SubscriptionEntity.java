@@ -13,13 +13,12 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class SubscriptionEntity {
 
     @Id
     @Column(name = "subscription_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long subscriptionId;
 
     @Column(name = "start_date")
     private LocalDate startDate;
@@ -35,5 +34,6 @@ public class SubscriptionEntity {
 
     @Column(name = "payments")
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "subscription")
+    @Builder.Default
     private List<PaymentEntity> paymentEntityList;
 }

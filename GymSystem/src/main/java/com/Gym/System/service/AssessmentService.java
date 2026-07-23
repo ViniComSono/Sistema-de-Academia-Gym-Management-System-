@@ -97,7 +97,7 @@ public class AssessmentService{
                 .AllDailyEnergyExpenditure(physicalCalculator.calculateAllDailyEnergyExpenditure(assessmentRequest))
                 .build();
 
-        user.getAssessementList().add(physicalAssessment);
+        user.getAssessmentList().add(physicalAssessment);
         userRepository.save(user);
 
         assessmentRepository.save(physicalAssessment);

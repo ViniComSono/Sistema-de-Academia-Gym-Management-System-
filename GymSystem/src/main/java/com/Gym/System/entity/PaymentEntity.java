@@ -13,12 +13,11 @@ import java.time.LocalDate;
 @Entity
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class PaymentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long paymentId;
 
     private BigDecimal amount;
 
@@ -31,4 +30,7 @@ public class PaymentEntity {
     @Column(name = "payment_status")
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    private  SubscriptionEntity subscription;
 }

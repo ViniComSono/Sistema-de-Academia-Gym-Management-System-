@@ -44,9 +44,4 @@ public class PhysicalAssessmentController {
     public ResponseEntity<AssessmentResponseDTO> creatPhysicalAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
         return new ResponseEntity<>(assessmentService.createPhysicalAssessment(assessmentRequest), HttpStatus.OK);
     }
-
-    @PutMapping
-    public ResponseEntity<AssessmentResponseDTO> editAllPhysicalAssessment(AssessmentRequestDTO assessmentRequest) throws NotFoundException{
-        return new ResponseEntity<>(assessmentService.editAllAssessment(assessmentRequest), HttpStatus.OK);
-    }
 }

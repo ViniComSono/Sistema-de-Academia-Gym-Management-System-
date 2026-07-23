@@ -9,9 +9,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@Entity
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class AssessmentRequestDTO {
 

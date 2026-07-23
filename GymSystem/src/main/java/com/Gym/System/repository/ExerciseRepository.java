@@ -9,6 +9,5 @@ import java.util.List;
 public interface ExerciseRepository extends JpaRepository<ExerciseEntity, Long> {
 
     ExerciseEntity findByExerciseNameIgnoreCase(String exerciseName);
-    List<ExerciseEntity> findByMuscleGroupIgnoreCase(String GrupoMuscular);
-
+    List<ExerciseEntity> findByMuscleGroupIgnoreCase(String GroupMuscular);
 }
