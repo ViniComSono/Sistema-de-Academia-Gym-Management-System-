@@ -12,11 +12,10 @@ import java.time.LocalDate;
 @Entity
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class PhysicalAssessmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+    private Long physicalAssessmentId;
 
     private LocalDate date;
 

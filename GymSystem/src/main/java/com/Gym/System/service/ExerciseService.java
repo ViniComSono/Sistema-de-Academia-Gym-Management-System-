@@ -8,18 +8,14 @@ import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.mapper.ExerciseMapper;
 import com.Gym.System.repository.ExerciseRepository;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
 @AllArgsConstructor
-@Builder
 @Getter
-@Setter
 public class ExerciseService {
 
     private final ExerciseRepository exerciseRepository;

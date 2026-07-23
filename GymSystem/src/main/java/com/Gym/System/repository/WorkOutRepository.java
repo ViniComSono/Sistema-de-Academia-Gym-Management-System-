@@ -9,5 +9,4 @@ import java.util.Set;
 public interface WorkOutRepository extends JpaRepository<WorkOutEntity, Long> {
 
     Set<WorkOutEntity> findByUserList_UserId(Long id);
-
 }
