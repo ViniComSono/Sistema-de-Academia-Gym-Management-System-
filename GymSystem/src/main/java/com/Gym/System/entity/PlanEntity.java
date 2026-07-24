@@ -4,7 +4,7 @@ package com.Gym.System.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "plan")
@@ -20,15 +20,16 @@ public class PlanEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long planId;
 
-    @Column(name = "plan_name")
+    @Column(name = "plan_name", unique = true)
     private String planName;
 
     @Column(name = "plan_price")
     private BigDecimal planPrice;
 
-    @Column(name = "plan_duration")
-    private LocalDate planDuration;
+    @Column(name = "plan_duration_in_months")
+    private int planDurationInMonths;
 
     @OneToMany(cascade =  {CascadeType.PERSIST, CascadeType.REFRESH})
-    private List<SubscriptionEntity> subscriptions;
+    @Builder.Default
+    private List<SubscriptionEntity> subscriptions = new ArrayList<>();
 }

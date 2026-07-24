@@ -32,5 +32,5 @@ public class PaymentEntity {
     private PaymentStatus paymentStatus;
 
     @ManyToOne(cascade = CascadeType.REFRESH)
-    private  SubscriptionEntity subscription;
+    private SubscriptionEntity subscription;
 }

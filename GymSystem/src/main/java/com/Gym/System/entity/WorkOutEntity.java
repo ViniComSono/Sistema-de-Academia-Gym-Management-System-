@@ -18,7 +18,7 @@ public class WorkOutEntity {
     @Column(name = "work_out_id")
     private Long workOutId;
 
-    @Column(name = "work_out_name")
+    @Column(name = "work_out_name", unique = true)
     private String workOutName;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

@@ -1,6 +1,5 @@
 package com.Gym.System.dto.request;
 
-import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

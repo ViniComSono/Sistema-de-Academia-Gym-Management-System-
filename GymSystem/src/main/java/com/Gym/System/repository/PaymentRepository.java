@@ -9,12 +9,12 @@ import java.util.List;
 
 public interface PaymentRepository extends JpaRepository <PaymentEntity, Long>{
 
-    List<PaymentEntity> findByDateOfPayment(LocalDate birthday);
-    List<PaymentEntity> findByDateOfPaymentBefore(LocalDate birthday);
-    List<PaymentEntity> findByDateOfPaymentAfter(LocalDate birthday);
-    List<PaymentEntity> findByDateOfPaymentBetween(LocalDate birthdayOne, LocalDate birthdayTwo);
+    List<PaymentEntity> findByDateOfPayment(LocalDate payment);
+    List<PaymentEntity> findByDateOfPaymentBefore(LocalDate payment);
+    List<PaymentEntity> findByDateOfPaymentAfter(LocalDate payment);
+    List<PaymentEntity> findByDateOfPaymentBetween(LocalDate paymentOne, LocalDate paymentTwo);
 
     List<PaymentEntity> findByPaymentStatus(PaymentStatus status);
 
-    PaymentEntity findBySubscription_paymentId(SubscriptionEntity subscription);
+    List<PaymentEntity> findBySubscription_SubscriptionId(Long subscriptionId);
 }
