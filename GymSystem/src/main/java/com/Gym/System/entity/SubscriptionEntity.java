@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "subscription")
@@ -35,5 +36,5 @@ public class SubscriptionEntity {
     @Column(name = "payments")
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "subscription")
     @Builder.Default
-    private List<PaymentEntity> paymentEntityList;
+    private List<PaymentEntity> paymentEntityList = new ArrayList<>();
 }
