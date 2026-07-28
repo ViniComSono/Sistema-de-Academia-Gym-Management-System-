@@ -30,6 +30,7 @@ public class AssessmentService{
     private final AssessmentMapper assessmentMapper;
     private final UserRepository userRepository;
     private final PhysicalAssessmentCalculator physicalCalculator;
+    private final PaymentService paymentService;
 
     public List<PhysicalAssessmentEntity> findByAll() throws NotFoundException{
         List<PhysicalAssessmentEntity> assessments = assessmentRepository.findAll();
