@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 public class PaymentResponseDTO {
 
-
     private Long paymentId;
     private BigDecimal amount;
     private LocalDate correctDate;
