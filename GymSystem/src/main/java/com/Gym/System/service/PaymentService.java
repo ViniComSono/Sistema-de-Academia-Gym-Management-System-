@@ -1,15 +1,22 @@
 package com.Gym.System.service;
 
+import com.Gym.System.dto.request.PaymentAddDateRequestDTO;
 import com.Gym.System.dto.request.PaymentDateRequestDTO;
+import com.Gym.System.dto.request.PaymentRequestDTO;
 import com.Gym.System.dto.response.PaymentResponseDTO;
 import com.Gym.System.entity.PaymentEntity;
+import com.Gym.System.entity.SubscriptionEntity;
 import com.Gym.System.enums.PaymentStatus;
 import com.Gym.System.exception.BadRequestException;
 import com.Gym.System.exception.NotFoundException;
+import com.Gym.System.mapper.PaymentMapper;
 import com.Gym.System.repository.PaymentRepository;
+import com.Gym.System.repository.SubscriptionRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -18,6 +25,8 @@ import java.util.List;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
+    private final SubscriptionRepository subscriptionRepository;
+    private final PaymentMapper paymentMapper;
 
     public List<PaymentEntity> findAll() throws NotFoundException {
         List<PaymentEntity> payments = paymentRepository.findAll();
@@ -86,4 +95,35 @@ public class PaymentService {
     }
 
 
+    public PaymentResponseDTO createPayment(PaymentRequestDTO paymentRequest) throws NotFoundException{
+        SubscriptionEntity subscription = subscriptionRepository.findById(paymentRequest.getSubscriptionId()).orElseThrow(() -> new NotFoundException("This subscription don't exist"));
+
+        PaymentEntity payment = PaymentEntity.builder()
+                .amount(paymentRequest.getAmount())
+                .correctDate(paymentRequest.getCorrectDate())
+                .dateOfPayment(paymentRequest.getCorrectDate())
+                .subscription(subscription)
+                .build();
+
+        if(payment.getDateOfPayment() == null && LocalDate.now().isBefore(payment.getCorrectDate()))
+            payment.setPaymentStatus(PaymentStatus.OPEN);
+        else if(payment.getDateOfPayment() == null &&LocalDate.now().isAfter(payment.getCorrectDate()))
+            payment.setPaymentStatus(PaymentStatus.OPEN);
+        else if(payment.getDateOfPayment() != null)
+            payment.setPaymentStatus(PaymentStatus.PAID);
+
+        paymentRepository.save(payment);
+        return paymentMapper.paymentResponse(payment);
+    }
+
+    public PaymentResponseDTO addPaymentDate(PaymentAddDateRequestDTO paymentRequest) throws NotFoundException, BadRequestException{
+        PaymentEntity payment = paymentRepository.findById(paymentRequest.getPaymentId()).orElseThrow(() -> new NotFoundException("This payment don't exist"));
+        if(payment.getDateOfPayment() != null)
+            throw new BadRequestException("already exist a date of payment");
+        else
+            payment.setDateOfPayment(paymentRequest.getPaymentDate());
+
+        paymentRepository.save(payment);
+        return paymentMapper.paymentResponse(payment);
+    }
 }
