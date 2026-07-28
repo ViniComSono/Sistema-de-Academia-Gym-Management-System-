@@ -94,6 +94,7 @@ public class PaymentService {
             return payments;
     }
 
+
     public PaymentResponseDTO createPayment(PaymentRequestDTO paymentRequest) throws NotFoundException{
         SubscriptionEntity subscription = subscriptionRepository.findById(paymentRequest.getSubscriptionId()).orElseThrow(() -> new NotFoundException("This subscription don't exist"));
 
@@ -125,6 +126,4 @@ public class PaymentService {
         paymentRepository.save(payment);
         return paymentMapper.paymentResponse(payment);
     }
-
-    //develpoing
 }
