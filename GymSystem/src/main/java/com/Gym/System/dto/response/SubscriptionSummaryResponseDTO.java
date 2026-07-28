@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubscriptionSummaryPlanResponseDTO {
+public class SubscriptionSummaryResponseDTO {
 
     private Long subscriptionId;
     private LocalDate startDate;

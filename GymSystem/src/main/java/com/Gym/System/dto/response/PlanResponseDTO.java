@@ -14,5 +14,5 @@ public class PlanResponseDTO {
     private Long planId;
     private String planName;
     private int planDurationInMonths;
-    private List<SubscriptionSummaryPlanResponseDTO> subscriptions;
+    private List<SubscriptionSummaryResponseDTO> subscriptions;
 }
