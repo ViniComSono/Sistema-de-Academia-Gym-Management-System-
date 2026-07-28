@@ -94,6 +94,48 @@ public class PaymentService {
             return payments;
     }
 
+    public List<PaymentResponseDTO> findAllResponse() throws NotFoundException {
+        return paymentMapper.paymentListResponse(findAll());
+    }
+
+    public PaymentResponseDTO findByIdResponse(Long id) throws NotFoundException{
+        return paymentMapper.paymentResponse(findById(id));
+    }
+
+    public List<PaymentResponseDTO> findByDateOfPaymentResponse(PaymentDateRequestDTO dateOfPayment)  throws NotFoundException{
+        return paymentMapper.paymentListResponse(findByDateOfPayment(dateOfPayment));
+    }
+
+    public List<PaymentResponseDTO> findByDateAfterOfPaymentResponse(PaymentDateRequestDTO dateOfPayment)  throws NotFoundException{
+        return paymentMapper.paymentListResponse(findByDateAfterOfPayment(dateOfPayment));
+    }
+
+    public List<PaymentResponseDTO> findByDateBeforeOfPaymentResponse(PaymentDateRequestDTO dateOfPayment)  throws NotFoundException{
+        return paymentMapper.paymentListResponse(findByDateBeforeOfPayment(dateOfPayment));
+    }
+
+    public List<PaymentResponseDTO> findByDateBetweenOfPaymentResponse(PaymentDateRequestDTO dateOfPaymentOne, PaymentDateRequestDTO dateOfPaymentTwo)  throws NotFoundException{
+        return paymentMapper.paymentListResponse(findByDateBetweenOfPayment(dateOfPaymentOne, dateOfPaymentTwo));
+    }
+
+    public List<PaymentResponseDTO> findByPaymentStatusResponse(String status) throws BadRequestException {
+        return paymentMapper.paymentListResponse(findByPaymentStatus(status));
+    }
+
+    public List<PaymentResponseDTO> findBySubscriptionIdResponse(Long id) throws NotFoundException{
+        return paymentMapper.paymentListResponse(findBySubscriptionId(id));
+    }
+
+    public PaymentStatus paymentStatus(PaymentEntity payment) throws NotFoundException{
+
+        if(payment.getDateOfPayment() != null)
+            return PaymentStatus.PAID;
+        else if(LocalDate.now().isBefore(payment.getCorrectDate()))
+            return PaymentStatus.OPEN;
+        else
+            return PaymentStatus.DELAYED;
+    }
+
 
     public PaymentResponseDTO createPayment(PaymentRequestDTO paymentRequest) throws NotFoundException{
         SubscriptionEntity subscription = subscriptionRepository.findById(paymentRequest.getSubscriptionId()).orElseThrow(() -> new NotFoundException("This subscription don't exist"));
@@ -105,12 +147,7 @@ public class PaymentService {
                 .subscription(subscription)
                 .build();
 
-        if(payment.getDateOfPayment() == null && LocalDate.now().isBefore(payment.getCorrectDate()))
-            payment.setPaymentStatus(PaymentStatus.OPEN);
-        else if(payment.getDateOfPayment() == null &&LocalDate.now().isAfter(payment.getCorrectDate()))
-            payment.setPaymentStatus(PaymentStatus.OPEN);
-        else if(payment.getDateOfPayment() != null)
-            payment.setPaymentStatus(PaymentStatus.PAID);
+        payment.setPaymentStatus(paymentStatus(payment));
 
         paymentRepository.save(payment);
         return paymentMapper.paymentResponse(payment);
@@ -118,12 +155,18 @@ public class PaymentService {
 
     public PaymentResponseDTO addPaymentDate(PaymentAddDateRequestDTO paymentRequest) throws NotFoundException, BadRequestException{
         PaymentEntity payment = paymentRepository.findById(paymentRequest.getPaymentId()).orElseThrow(() -> new NotFoundException("This payment don't exist"));
-        if(payment.getDateOfPayment() != null)
+        if(payment.getDateOfPayment() != null) {
             throw new BadRequestException("already exist a date of payment");
-        else
+        }else{
             payment.setDateOfPayment(paymentRequest.getPaymentDate());
+            payment.setPaymentStatus(paymentStatus(payment));
+        }
 
         paymentRepository.save(payment);
         return paymentMapper.paymentResponse(payment);
+    }
+
+    public void deletePayment(Long paymentId) throws NotFoundException{
+        PaymentEntity payment = paymentRepository.findById(paymentId).orElseThrow(() -> new NotFoundException("This payment don't exist"));
     }
 }
