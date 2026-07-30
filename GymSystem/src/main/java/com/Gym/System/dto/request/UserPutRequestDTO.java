@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,7 +22,8 @@ public class UserPutRequestDTO {
     @JsonFormat(pattern = "dd/MM/YYYY")
     private LocalDate dateOfBirth;
 
-    private Set<Long> assessmentIdList = new HashSet<>();
-    private Set<Long> workOutIdList = new HashSet<>();
+    private List<Long> assessmentIdList = new ArrayList<>();
+    private List<Long> workOutIdList = new ArrayList<>();
+    private Long subscriptionId;
 
 }
