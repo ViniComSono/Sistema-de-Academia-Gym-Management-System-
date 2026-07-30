@@ -25,7 +25,7 @@ public class PhysicalAssessmentCalculator {
 
     private final UserRepository userRepository;
 
-    public BigDecimal calculateImc (AssessmentCharacteristicsRequestDTO assessmentRequest) throws NotFoundException{
+    public BigDecimal calculateImc (AssessmentCharacteristicsRequestDTO assessmentRequest){
         return assessmentRequest.getWeight().divide(assessmentRequest.getWeight().pow(2), 2, RoundingMode.HALF_UP);
     }
 
@@ -55,7 +55,7 @@ public class PhysicalAssessmentCalculator {
                         .weight(assessmentRequest.getWeight())
                         .build());
 
-        int age = Period.between(user.getBirthday() , LocalDate.now()).getYears();
+        int age = Period.between(user.getDateOfBirth() , LocalDate.now()).getYears();
         double genderParam;
 
         if(user.getSexUser() == SexUser.MALE){
@@ -80,7 +80,7 @@ public class PhysicalAssessmentCalculator {
     public BigDecimal calculateBasalMetabolicRate (AssessmentRequestDTO assessmentRequest) throws NotFoundException {
         UserEntity user = userRepository.findById(assessmentRequest.getUserId()).orElseThrow(() -> new NotFoundException("This user Id don't exist"));
 
-        int age = Period.between(user.getBirthday() , LocalDate.now()).getYears();
+        int age = Period.between(user.getDateOfBirth() , LocalDate.now()).getYears();
         int genderParam;
 
         if(user.getSexUser() == SexUser.MALE){

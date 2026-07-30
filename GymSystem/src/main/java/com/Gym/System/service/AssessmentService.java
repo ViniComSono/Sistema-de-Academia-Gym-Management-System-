@@ -15,10 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Getter
@@ -64,8 +61,8 @@ public class AssessmentService{
         return assessments.getFirst();
     }
 
-    public Set<AssessmentResponseDTO> findByAllResponse() throws NotFoundException{
-        Set<PhysicalAssessmentEntity> assessments = new HashSet<>(findByAll());
+    public List<AssessmentResponseDTO> findByAllResponse() throws NotFoundException{
+        List<PhysicalAssessmentEntity> assessments = new ArrayList<>(findByAll());
 
         return assessmentMapper.assessmentResponse(assessments);
     }
@@ -74,8 +71,8 @@ public class AssessmentService{
         return assessmentMapper.assessmentResponse(findById(id));
     }
 
-    public Set<AssessmentResponseDTO> findByUserIdResponse(Long userId) throws NotFoundException{
-        Set<PhysicalAssessmentEntity> assessmentEntitySet = new HashSet<>(findByUserId(userId));
+    public List<AssessmentResponseDTO> findByUserIdResponse(Long userId) throws NotFoundException{
+        List<PhysicalAssessmentEntity> assessmentEntitySet = new ArrayList<>(findByUserId(userId));
         return assessmentMapper.assessmentResponse(assessmentEntitySet);
     }
 

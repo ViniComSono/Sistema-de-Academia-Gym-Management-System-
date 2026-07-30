@@ -2,17 +2,19 @@ package com.Gym.System.service;
 
 import com.Gym.System.dto.request.*;
 import com.Gym.System.dto.response.UserResponseDTO;
+import com.Gym.System.entity.PhysicalAssessmentEntity;
 import com.Gym.System.entity.UserEntity;
 import com.Gym.System.entity.WorkOutEntity;
 import com.Gym.System.exception.NotFoundException;
 import com.Gym.System.mapper.UserMapper;
+import com.Gym.System.repository.PhysicalAssessmentRepository;
 import com.Gym.System.repository.UserRepository;
+import com.Gym.System.repository.WorkOutRepository;
 import lombok.*;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -21,7 +23,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final WorkOutService workOutService;
+    private final PhysicalAssessmentRepository assessmentRepository;
+    private final WorkOutRepository workOutRepository;
 
     public List<UserEntity> findAll() throws NotFoundException{
          List<UserEntity> users = userRepository.findAll();
@@ -55,8 +58,8 @@ public class UserService {
         }
     }
 
-    public List<UserEntity> findByBirthdayAfter(UserBirthdayRequestDTO userRequest) throws NotFoundException{
-        List<UserEntity> users = userRepository.findByBirthdayAfter(userRequest.getBirthday());
+    public List<UserEntity> findByBirthdayAfter(UserDateOfBirthRequestDTO userRequest) throws NotFoundException{
+        List<UserEntity> users = userRepository.findByBirthdayAfter(userRequest.getDateOfBirth());
 
         if(users.isEmpty()){
             throw new NotFoundException("Don't exist any user with the birthday after this data");
@@ -65,8 +68,8 @@ public class UserService {
         }
     }
 
-    public List<UserEntity> findByBirthdayBefore(UserBirthdayRequestDTO userRequest) throws NotFoundException{
-        List<UserEntity> users = userRepository.findByBirthdayBefore(userRequest.getBirthday());
+    public List<UserEntity> findByBirthdayBefore(UserDateOfBirthRequestDTO userRequest) throws NotFoundException{
+        List<UserEntity> users = userRepository.findByBirthdayBefore(userRequest.getDateOfBirth());
 
         if(users.isEmpty()){
             throw new NotFoundException("Don't exist any user with the birthday before this data");
@@ -85,9 +88,9 @@ public class UserService {
         }
     }
 
-    public List<UserEntity> findyByBirthdayYear(UserBirthdayRequestDTO userRequest) throws NotFoundException{
-        LocalDate firstDate = LocalDate.of(userRequest.getBirthday().getYear(), 1, 1);
-        LocalDate lastDate = LocalDate.of(userRequest.getBirthday().getYear(), 12, 31);
+    public List<UserEntity> findyByBirthdayYear(UserDateOfBirthRequestDTO userRequest) throws NotFoundException{
+        LocalDate firstDate = LocalDate.of(userRequest.getDateOfBirth().getYear(), 1, 1);
+        LocalDate lastDate = LocalDate.of(userRequest.getDateOfBirth().getYear(), 12, 31);
         List<UserEntity> users = userRepository.findByBirthdayBetween(firstDate, lastDate);
 
         if(users.isEmpty()){
@@ -97,8 +100,8 @@ public class UserService {
         }
     }
 
-    public Set<UserResponseDTO> findAllResponse() throws NotFoundException{
-        Set<UserEntity> users = new HashSet<>(findAll());
+    public List<UserResponseDTO> findAllResponse() throws NotFoundException{
+        List<UserEntity> users = new ArrayList<>(findAll());
         return userMapper.userResponseSet(users);
     }
 
@@ -110,32 +113,32 @@ public class UserService {
         return userMapper.userResponseDTO(findByUserName(name));
     }
 
-    public Set<UserResponseDTO> findByBirthdayResponse(LocalDate birthday) throws NotFoundException{
-        Set<UserEntity> users = new HashSet<>(findByBirthday(birthday));
+    public List<UserResponseDTO> findByBirthdayResponse(LocalDate birthday) throws NotFoundException{
+        List<UserEntity> users = new ArrayList<>(findByBirthday(birthday));
 
         return userMapper.userResponseSet(users);
     }
 
-    public Set<UserResponseDTO> findByBirthdayAfterResponse(UserBirthdayRequestDTO userRequest) throws NotFoundException{
-        Set<UserEntity> users = new HashSet<>(findByBirthdayAfter(userRequest));
+    public List<UserResponseDTO> findByBirthdayAfterResponse(UserDateOfBirthRequestDTO userRequest) throws NotFoundException{
+        List<UserEntity> users = new ArrayList<>(findByBirthdayAfter(userRequest));
 
         return userMapper.userResponseSet(users);
     }
 
-    public Set<UserResponseDTO> findByBirthdayBeforeResponse(UserBirthdayRequestDTO userRequest) throws NotFoundException{
-        Set<UserEntity> users = new HashSet<>(findByBirthdayBefore(userRequest));
+    public List<UserResponseDTO> findByBirthdayBeforeResponse(UserDateOfBirthRequestDTO userRequest) throws NotFoundException{
+        List<UserEntity> users = new ArrayList<>(findByBirthdayBefore(userRequest));
 
         return userMapper.userResponseSet(users);
     }
 
-    public Set<UserResponseDTO> findByBirthdayBetweenResponse(UserBirthdayBetweenRequestDTO userRequest) throws NotFoundException{
-        Set<UserEntity> users = new HashSet<>(findByBirthdayBetween(userRequest));
+    public List<UserResponseDTO> findByBirthdayBetweenResponse(UserBirthdayBetweenRequestDTO userRequest) throws NotFoundException{
+        List<UserEntity> users = new ArrayList<>(findByBirthdayBetween(userRequest));
 
         return userMapper.userResponseSet(users);
     }
 
-    public Set<UserResponseDTO> findByBirthdayYearResponse(UserBirthdayRequestDTO userRequest) throws NotFoundException{
-        Set<UserEntity> users = new HashSet<>(findyByBirthdayYear(userRequest));
+    public List<UserResponseDTO> findByBirthdayYearResponse(UserDateOfBirthRequestDTO userRequest) throws NotFoundException{
+        List<UserEntity> users = new ArrayList<>(findyByBirthdayYear(userRequest));
 
         return userMapper.userResponseSet(users);
     }
@@ -145,7 +148,7 @@ public class UserService {
         UserEntity newUser = UserEntity.builder()
                 .name(userRequest.getName())
                 .sexUser(userRequest.getSexUser())
-                .birthday(userRequest.getBirthday())
+                .dateOfBirth(userRequest.getDateOfBirth())
                 .build();
 
         userRepository.save(newUser);
@@ -154,20 +157,25 @@ public class UserService {
 
     public UserResponseDTO editAll(UserPutRequestDTO userRequest) throws NotFoundException{
         UserEntity user = findById(userRequest.getUserId());
-        Set<WorkOutEntity> workOutSet = new HashSet<>();
+        List<WorkOutEntity> workOutList = new ArrayList<>();
+        List<PhysicalAssessmentEntity> assessmentList = new ArrayList<>();
+
 
         for(Long workOutId : userRequest.getWorkOutIdList()){
-            WorkOutEntity workOut = workOutService.findById(workOutId);
-            workOutSet.add(workOut);
+            WorkOutEntity workOut = workOutRepository.findById(workOutId).orElseThrow(() -> new NotFoundException("This workout don't exist"));
+            workOutList.add(workOut);
         }
-            /*
-            FAZER A DE ASSESSMENT DEPOIS, NAO FIZ AGORA POIS NAO ESTA PRONTO NO MOMENNTO
-             */
+
+        for(Long assessmentId : userRequest.getAssessmentIdList()){
+            PhysicalAssessmentEntity assessment = assessmentRepository.findById(assessmentId).orElseThrow(() -> new NotFoundException("This assessment don't exist"));
+            assessmentList.add(assessment);
+        }
 
         user.setName(userRequest.getName());
         user.setSexUser(userRequest.getSexUser());
-        user.setBirthday(userRequest.getBirthday());
-        user.setWorkOutList(workOutSet);
+        user.setDateOfBirth(userRequest.getDateOfBirth());
+        user.setWorkOutList(workOutList);
+        user.setAssessmentList(assessmentList);
 
         userRepository.save(user);return
                 userMapper.userResponseDTO(user);
@@ -177,7 +185,7 @@ public class UserService {
         UserEntity user = findById(userRequest.getUserId());
 
         for(Long workOutId : userRequest.getWorkOutIdList()){
-            WorkOutEntity workOut = workOutService.findById(workOutId);
+            WorkOutEntity workOut = workOutRepository.findById(workOutId).orElseThrow(() -> new NotFoundException("This workout don't exist"));
             user.getWorkOutList().add(workOut);
         }
 
@@ -189,7 +197,7 @@ public class UserService {
         UserEntity user = findById(userRequest.getUserId());
 
         for(Long workOutId : userRequest.getWorkOutIdList()){
-            WorkOutEntity workOut = workOutService.findById(workOutId);
+            WorkOutEntity workOut = workOutRepository.findById(workOutId).orElseThrow(() -> new NotFoundException("This workout don't exist"));
             user.getWorkOutList().remove(workOut);
         }
 

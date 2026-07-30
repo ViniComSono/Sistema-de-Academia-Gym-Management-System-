@@ -1,7 +1,6 @@
 package com.Gym.System.repository;
 
 import com.Gym.System.entity.PaymentEntity;
-import com.Gym.System.entity.SubscriptionEntity;
 import com.Gym.System.enums.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;

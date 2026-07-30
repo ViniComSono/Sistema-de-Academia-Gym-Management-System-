@@ -20,9 +20,9 @@ public class UserPutRequestDTO {
     private SexUser sexUser;
 
     @JsonFormat(pattern = "dd/MM/YYYY")
-    private LocalDate birthday;
+    private LocalDate dateOfBirth;
 
-    private Set<Long> assessementIdList = new HashSet<>();
+    private Set<Long> assessmentIdList = new HashSet<>();
     private Set<Long> workOutIdList = new HashSet<>();
 
 }

@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface PhysicalAssessmentRepository extends JpaRepository<PhysicalAssessmentEntity, Long>{
 
-    public List<PhysicalAssessmentEntity> findByUser_UserId(Long user);
-    public List<PhysicalAssessmentEntity> findByDate(LocalDate date);
+    List<PhysicalAssessmentEntity> findByUser_UserId(Long user);
+    List<PhysicalAssessmentEntity> findByDate(LocalDate date);
 }

@@ -6,13 +6,12 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class SubscriptionSummaryResponseDTO {
 
     private Long subscriptionId;
     private LocalDate startDate;
     private LocalDate expirationDate;
     private SubscriptionStatus status;
+    private PlanSummaryResponseDTO plan;
+    private UserSummaryResponseDTO user;
 }

@@ -19,7 +19,7 @@ public class UserRequestDTO {
 
     @NotBlank
     @JsonFormat(pattern = "dd/MM/YYYY")
-    private LocalDate birthday;
+    private LocalDate dateOfBirth;
 
 
 }
