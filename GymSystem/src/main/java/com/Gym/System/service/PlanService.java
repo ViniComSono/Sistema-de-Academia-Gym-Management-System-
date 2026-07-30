@@ -22,29 +22,6 @@ public class PlanService {
     private final PlanRepository planRepository;
     private final PlanMapper planMapper;
 
-    public List<PlanEntity> findAll() throws NotFoundException{
-        List<PlanEntity> plans = planRepository.findAll();
-
-        if(plans.isEmpty())
-            throw new NotFoundException("Don't exist any plan on the system");
-        else
-            return plans;
-    }
-
-    public PlanEntity findByPlanId(Long planId) throws NotFoundException{
-        return planRepository.findById(planId).orElseThrow(() -> new NotFoundException("This payment don't exist"));
-    }
-
-    public PlanEntity findByPlanName(String name) throws NotFoundException{
-        PlanEntity plan = planRepository.findByPlanNameIgnoreCase(name);
-
-        if(plan == null)
-            throw new NotFoundException("This payment don't exist");
-        else
-            return plan;
-
-    }
-
     public List<PlanEntity> findByDurationInMonths(int months){
         return planRepository.findByPlanDurationInMonths(months);
     }
@@ -58,24 +35,34 @@ public class PlanService {
             return subscription;
     }
 
-    public List<PlanResponseDTO> findAllResponse() throws NotFoundException{
-        return planMapper.plansResponse(findAll());
+    public List<PlanResponseDTO> findAllResponse(){
+        return planMapper.plansResponse(planRepository.findAll());
     }
 
     public PlanResponseDTO findByPlanIdResponse(Long planId) throws NotFoundException{
-        return planMapper.planResponse(findByPlanId(planId));
+        return planMapper.planResponse(planRepository.findById(planId).orElseThrow(() -> new NotFoundException("this plan don't exist")));
     }
 
     public PlanResponseDTO findByPlanNameResponse(String name) throws NotFoundException{
-        return planMapper.planResponse(findByPlanName(name));
+        PlanEntity plan = planRepository.findByPlanNameIgnoreCase(name);
+
+        if(plan == null)
+            throw new NotFoundException("This payment don't exist");
+        else
+            return planMapper.planResponse(plan);
     }
 
     public List<PlanResponseDTO> findByDurationInMonthsResponse(int months){
-        return planMapper.plansResponse(findByDurationInMonths(months));
+        return planMapper.plansResponse(planRepository.findByPlanDurationInMonths(months));
     }
 
     public List<PlanResponseDTO> findBySubscriptionIdResponse(Long id) throws NotFoundException{
-        return planMapper.plansResponse(findBySubscriptionId(id));
+        List<PlanEntity> subscription = planRepository.findBySubscription_SubscriptionId(id);
+
+        if(subscription.isEmpty())
+            throw new NotFoundException("This plan don't have any subscription");
+        else
+            return planMapper.plansResponse(subscription);
     }
 
     public PlanResponseDTO createNewPlan(PlanRequestDTO planRequest) throws BadRequestException{
@@ -103,7 +90,7 @@ public class PlanService {
 
     public PlanResponseDTO editPlan(PlanPutRequestDTO planRequest) throws NotFoundException, BadRequestException{
         try{
-            PlanEntity plan = findByPlanId(planRequest.getPlanId());
+            PlanEntity plan = planRepository.findById(planRequest.getPlanId()).orElseThrow(() -> new NotFoundException("this plan don't exist"));
 
             plan.setPlanName(planRequest.getPlanName());
             plan.setPlanPrice(planRequest.getPlanPrice());
@@ -116,8 +103,8 @@ public class PlanService {
         }
     }
 
-    public void deletePlan(Long id) throws NotFoundException{
-        planRepository.delete(findByPlanId(id));
+    public void deletePlan(Long planId) throws NotFoundException{
+        planRepository.delete(planRepository.findById(planId).orElseThrow(() -> new NotFoundException("this plan don't exist")));
     }
 }
 
