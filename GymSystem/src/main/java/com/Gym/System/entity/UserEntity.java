@@ -30,14 +30,17 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private SexUser sexUser;
 
-    private LocalDate birthday;
-
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     @Builder.Default
-    private Set<PhysicalAssessmentEntity> assessmentList = new HashSet<>();
+    private List<PhysicalAssessmentEntity> assessmentList = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "userList")
     @Builder.Default
-    private Set<WorkOutEntity> workOutList = new HashSet<>();
+    private List<WorkOutEntity> workOutList = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.REFRESH, mappedBy = "user")
+    private SubscriptionEntity subscription;
 }

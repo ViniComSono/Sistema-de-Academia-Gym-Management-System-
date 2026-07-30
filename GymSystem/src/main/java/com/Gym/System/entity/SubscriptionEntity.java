@@ -37,4 +37,7 @@ public class SubscriptionEntity {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "subscription")
     @Builder.Default
     private List<PaymentEntity> paymentEntityList = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.REFRESH)
+    private UserEntity user;
 }

@@ -79,17 +79,21 @@ public class PlanService {
     }
 
     public PlanResponseDTO createNewPlan(PlanRequestDTO planRequest) throws BadRequestException{
-        if(planRepository.findByPlanNameIgnoreCase(planRequest.getPlanName()) != null){
-            PlanEntity plan = PlanEntity.builder()
-                    .planName(planRequest.getPlanName())
-                    .planPrice(planRequest.getPlanPrice())
-                    .planDurationInMonths(planRequest.getPlanDurationInMonths())
-                    .build();
+        try{
+            if(planRepository.findByPlanNameIgnoreCase(planRequest.getPlanName()) != null){
+                PlanEntity plan = PlanEntity.builder()
+                        .planName(planRequest.getPlanName())
+                        .planPrice(planRequest.getPlanPrice())
+                        .planDurationInMonths(planRequest.getPlanDurationInMonths())
+                        .build();
 
-            planRepository.save(plan);
-            return planMapper.planResponse(plan);
-        }else{
-            throw new BadRequestException("This user name already exists");
+                planRepository.save(plan);
+                return planMapper.planResponse(plan);
+            }else{
+                throw new BadRequestException("This user name already exists");
+            }
+        } catch (Exception e) {
+            throw new BadRequestException("bad request");
         }
     }
 
@@ -97,15 +101,19 @@ public class PlanService {
     //
     //}
 
-    public PlanResponseDTO editPlan (PlanPutRequestDTO planRequest) throws NotFoundException{
-        PlanEntity plan = findByPlanId(planRequest.getPlanId());
+    public PlanResponseDTO editPlan(PlanPutRequestDTO planRequest) throws NotFoundException, BadRequestException{
+        try{
+            PlanEntity plan = findByPlanId(planRequest.getPlanId());
 
-        plan.setPlanName(planRequest.getPlanName());
-        plan.setPlanPrice(planRequest.getPlanPrice());
-        plan.setPlanDurationInMonths(planRequest.getPlanDurationInMonths());
+            plan.setPlanName(planRequest.getPlanName());
+            plan.setPlanPrice(planRequest.getPlanPrice());
+            plan.setPlanDurationInMonths(planRequest.getPlanDurationInMonths());
 
-        planRepository.save(plan);
-        return planMapper.planResponse(plan);
+            planRepository.save(plan);
+            return planMapper.planResponse(plan);
+        } catch (Exception e) {
+            throw new BadRequestException("bad request");
+        }
     }
 
     public void deletePlan(Long id) throws NotFoundException{

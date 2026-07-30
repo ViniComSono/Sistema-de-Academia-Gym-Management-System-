@@ -137,33 +137,41 @@ public class PaymentService {
     }
 
 
-    public PaymentResponseDTO createPayment(PaymentRequestDTO paymentRequest) throws NotFoundException{
-        SubscriptionEntity subscription = subscriptionRepository.findById(paymentRequest.getSubscriptionId()).orElseThrow(() -> new NotFoundException("This subscription don't exist"));
+    public PaymentResponseDTO createPayment(PaymentRequestDTO paymentRequest) throws NotFoundException, BadRequestException{
+        try {
+            SubscriptionEntity subscription = subscriptionRepository.findById(paymentRequest.getSubscriptionId()).orElseThrow(() -> new NotFoundException("This subscription don't exist"));
 
-        PaymentEntity payment = PaymentEntity.builder()
-                .amount(paymentRequest.getAmount())
-                .correctDate(paymentRequest.getCorrectDate())
-                .dateOfPayment(paymentRequest.getCorrectDate())
-                .subscription(subscription)
-                .build();
+            PaymentEntity payment = PaymentEntity.builder()
+                    .amount(paymentRequest.getAmount())
+                    .correctDate(paymentRequest.getCorrectDate())
+                    .dateOfPayment(paymentRequest.getCorrectDate())
+                    .subscription(subscription)
+                    .build();
 
-        payment.setPaymentStatus(paymentStatus(payment));
-
-        paymentRepository.save(payment);
-        return paymentMapper.paymentResponse(payment);
+            payment.setPaymentStatus(paymentStatus(payment));
+            subscription.getPaymentEntityList().add(payment);
+            paymentRepository.save(payment);
+            return paymentMapper.paymentResponse(payment);
+        } catch (Exception e) {
+            throw new BadRequestException("bad request");
+        }
     }
 
     public PaymentResponseDTO addPaymentDate(PaymentAddDateRequestDTO paymentRequest) throws NotFoundException, BadRequestException{
-        PaymentEntity payment = paymentRepository.findById(paymentRequest.getPaymentId()).orElseThrow(() -> new NotFoundException("This payment don't exist"));
-        if(payment.getDateOfPayment() != null) {
-            throw new BadRequestException("already exist a date of payment");
-        }else{
-            payment.setDateOfPayment(paymentRequest.getPaymentDate());
-            payment.setPaymentStatus(paymentStatus(payment));
-        }
+        try{
+            PaymentEntity payment = paymentRepository.findById(paymentRequest.getPaymentId()).orElseThrow(() -> new NotFoundException("This payment don't exist"));
+            if(payment.getDateOfPayment() != null) {
+                throw new BadRequestException("already exist a date of payment");
+            }else{
+                payment.setDateOfPayment(paymentRequest.getPaymentDate());
+                payment.setPaymentStatus(paymentStatus(payment));
+            }
 
-        paymentRepository.save(payment);
-        return paymentMapper.paymentResponse(payment);
+            paymentRepository.save(payment);
+            return paymentMapper.paymentResponse(payment);
+        } catch (Exception e) {
+            throw new BadRequestException("bad request");
+        }
     }
 
     public void deletePayment(Long paymentId) throws NotFoundException{

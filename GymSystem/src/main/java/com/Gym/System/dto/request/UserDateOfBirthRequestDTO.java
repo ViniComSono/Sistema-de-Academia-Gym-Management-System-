@@ -8,9 +8,9 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class UserBirthdayRequestDTO {
+public class UserDateOfBirthRequestDTO {
 
     @NotBlank
     @JsonFormat(pattern = "dd/MM/YYYY")
-    private LocalDate birthday;
+    private LocalDate dateOfBirth;
 }

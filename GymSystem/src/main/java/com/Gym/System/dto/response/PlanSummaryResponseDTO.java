@@ -1,15 +1,14 @@
 package com.Gym.System.dto.response;
 
-import lombok.*;
-
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-public class PlanResponseDTO {
+public class PlanSummaryResponseDTO {
 
     private Long planId;
     private String planName;
     private int planDurationInMonths;
-    private List<SubscriptionSummaryResponseDTO> subscriptions;
+
 }

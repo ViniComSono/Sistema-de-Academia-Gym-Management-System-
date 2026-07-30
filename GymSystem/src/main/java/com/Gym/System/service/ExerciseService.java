@@ -10,7 +10,10 @@ import com.Gym.System.repository.ExerciseRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -21,8 +24,8 @@ public class ExerciseService {
     private final ExerciseRepository exerciseRepository;
     private final ExerciseMapper exerciseMapper;
 
-    public Set<ExerciseEntity> findAll() throws NotFoundException {
-        Set<ExerciseEntity> list = new HashSet<>(exerciseRepository.findAll());
+    public List<ExerciseEntity> findAll() throws NotFoundException {
+        List<ExerciseEntity> list = new ArrayList<>(exerciseRepository.findAll());
 
         if(list.isEmpty())
             throw new NotFoundException("Those aren´t any exercise on the system");
@@ -43,8 +46,8 @@ public class ExerciseService {
            throw new NotFoundException("This user don´t exist on the system");
     }
 
-    public Set<ExerciseEntity> findByMuscleGroupIgnoreCase(String muscleGroup) throws NotFoundException{
-        Set<ExerciseEntity> exerciseList = new HashSet<>(exerciseRepository.findByMuscleGroupIgnoreCase(muscleGroup));
+    public List<ExerciseEntity> findByMuscleGroupIgnoreCase(String muscleGroup) throws NotFoundException{
+        List<ExerciseEntity> exerciseList = new ArrayList<>(exerciseRepository.findByMuscleGroupIgnoreCase(muscleGroup));
 
         if(exerciseList.isEmpty())
             throw new NotFoundException("This user don´t exist on the system");
@@ -52,7 +55,7 @@ public class ExerciseService {
             return exerciseList;
     }
 
-    public Set<ExerciseResponseDTO> findAllResponse() throws NotFoundException{
+    public List<ExerciseResponseDTO> findAllResponse() throws NotFoundException{
         return exerciseMapper.exerciseListResponse(findAll());
     }
 
@@ -64,7 +67,7 @@ public class ExerciseService {
         return exerciseMapper.exerciseResponse(findByExerciseNameIgnoreCase(name));
     }
 
-    public Set<ExerciseResponseDTO> findByMuscleGroupIgnoreCaseResponse(String muscleGroup) throws NotFoundException{
+    public List<ExerciseResponseDTO> findByMuscleGroupIgnoreCaseResponse(String muscleGroup) throws NotFoundException{
         return exerciseMapper.exerciseListResponse(findByMuscleGroupIgnoreCase(muscleGroup));
     }
 
