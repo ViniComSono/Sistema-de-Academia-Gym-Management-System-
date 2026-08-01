@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class UserDateOfBirthRequestDTO {
+public class UserBirthdayRequestDTO {
 
     @NotBlank
     @JsonFormat(pattern = "dd/MM/YYYY")

@@ -14,6 +14,9 @@ import com.Gym.System.repository.WorkOutRepository;
 import lombok.*;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,73 +31,103 @@ public class UserService {
     private final WorkOutRepository workOutRepository;
     private final SubscriptionRepository subscriptionRepository;
 
+    public List<UserEntity> findAll(){
+        return userRepository.findAll();
+    }
+
     public List<UserResponseDTO> findAllResponse(){
-        return userMapper.userResponseSet(userRepository.findAll());
+        return userMapper.userResponseSet(findAll());
     }
 
-    public UserResponseDTO findByIdResponse(Long id) throws NotFoundException{
-        return userMapper.userResponseDTO(userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found this User")));
+    public UserEntity findByUserId(Long userId) throws NotFoundException{
+        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("this " + userId + "user id don't exist"));
     }
 
-    public UserResponseDTO findByUserNameResponse(String name) throws NotFoundException{
-        UserEntity user = userRepository.findByName(name);
+    public UserResponseDTO findByUserIdResponse(Long userId) throws NotFoundException{
+        return userMapper.userResponseDTO(findByUserId(userId));
+    }
 
-        if(user != null)
-            return userMapper.userResponseDTO(user);
+    public UserEntity findByUserName(String userName) throws NotFoundException{
+        UserEntity user = userRepository.findByName(userName);
+
+        if(user == null)
+            throw new NotFoundException("this '" + userName + "' user name don't exist");
         else
-            throw new NotFoundException("Not found this user");
+            return user;
     }
 
-    public List<UserResponseDTO> findByBirthdayResponse(LocalDate birthday) throws NotFoundException{
-        List<UserEntity> usersList = userRepository.findByBirthday(birthday);
+    public UserResponseDTO findByUserNameResponse(String userName) throws NotFoundException{
+        return userMapper.userResponseDTO(findByUserName(userName));
+    }
 
-        if(usersList.isEmpty()){
-            throw new NotFoundException("Any user with this birthday data");
+    public List<UserEntity> findByBirthday(UserBirthdayRequestDTO userBirthdayRequest) throws NotFoundException{
+        List<UserEntity> userList = userRepository.findByBirthday(userBirthdayRequest.getDateOfBirth());
+
+        if(userList.isEmpty())
+            throw new NotFoundException("don´t exist any user with this birthday '" + userBirthdayRequest.getDateOfBirth() + "'");
+        else
+            return userList;
+    }
+
+    public List<UserResponseDTO> findByBirthdayResponse(UserBirthdayRequestDTO userBirthdayRequest) throws NotFoundException{
+        return userMapper.userResponseSet(findByBirthday(userBirthdayRequest));
+    }
+
+    public List<UserEntity> findByBirthDayAfter(UserBirthdayRequestDTO userBirthdayRequest) throws NotFoundException{
+        List<UserEntity> userList = userRepository.findByBirthdayAfter(userBirthdayRequest.getDateOfBirth());
+
+        if(userList.isEmpty())
+            throw new NotFoundException("don´t exist any user with this birthday after of this '" + userBirthdayRequest.getDateOfBirth() + "'");
+        else
+            return userList;
+    }
+
+    public List<UserResponseDTO> findByBirthdayAfterResponse(UserBirthdayRequestDTO userBirthdayRequest) throws NotFoundException{
+        return userMapper.userResponseSet(findByBirthDayAfter(userBirthdayRequest));
+    }
+
+    public List<UserEntity> findByBirthdayBefore(UserBirthdayRequestDTO userBirthdayRequest) throws NotFoundException{
+        List<UserEntity> userList = userRepository.findByBirthdayBefore(userBirthdayRequest.getDateOfBirth());
+
+        if(userList.isEmpty()){
+            throw new NotFoundException("don't exist any user with this birthday before of this '" + userBirthdayRequest.getDateOfBirth() + "'");
         }else{
-            return userMapper.userResponseSet(usersList);
+            return userList;
         }
     }
 
-    public List<UserResponseDTO> findByBirthdayAfterResponse(UserDateOfBirthRequestDTO userRequest) throws NotFoundException{
-        List<UserEntity> users = userRepository.findByBirthdayAfter(userRequest.getDateOfBirth());
+    public List<UserResponseDTO> findByBirthdayBeforeResponse(UserBirthdayRequestDTO userBirthdayRequest) throws NotFoundException{
+        return userMapper.userResponseSet(findByBirthdayBefore(userBirthdayRequest));
+    }
 
-        if(users.isEmpty()){
-            throw new NotFoundException("Don't exist any user with the birthday after this data");
+    public List<UserEntity> findByBirthdayBetween(UserBirthdayBetweenRequestDTO userBirthdayRequest) throws NotFoundException{
+        List<UserEntity> userList = userRepository.findByBirthdayBetween(userBirthdayRequest.getDateOne(), userBirthdayRequest.getDateTwo());
+
+        if(userList.isEmpty()){
+            throw new NotFoundException("don't exist any user with the birthday between those dates");
         }else{
-            return userMapper.userResponseSet(users);
+            return userList;
         }
     }
 
-    public List<UserResponseDTO> findByBirthdayBeforeResponse(UserDateOfBirthRequestDTO userRequest) throws NotFoundException{
-        List<UserEntity> users = userRepository.findByBirthdayBefore(userRequest.getDateOfBirth());
-
-        if(users.isEmpty()){
-            throw new NotFoundException("Don't exist any user with the birthday before this data");
-        }else{
-            return userMapper.userResponseSet(users);
-        }
+    public List<UserResponseDTO> findByBirthdayBetweenResponse(UserBirthdayBetweenRequestDTO userBirthdayRequest) throws NotFoundException{
+        return userMapper.userResponseSet(findByBirthdayBetween(userBirthdayRequest));
     }
 
-    public List<UserResponseDTO> findByBirthdayBetweenResponse(UserBirthdayBetweenRequestDTO userRequest) throws NotFoundException{
-        List<UserEntity> users = userRepository.findByBirthdayBetween(userRequest.getDateOne(), userRequest.getDateTwo());
+    public List<UserEntity> findByBirthdayYear(Year year) throws NotFoundException{
+        LocalDate fistDate = LocalDate.of(year.getValue(), Month.JANUARY, 1);
+        YearMonth lastDay = YearMonth.of(year.getValue(), Month.DECEMBER);
+        LocalDate secondDate = LocalDate.of(year.getValue(), Month.DECEMBER, lastDay.getMonthValue());
+        List<UserEntity> userList = userRepository.findByBirthdayBetween(fistDate, secondDate);
 
-        if(users.isEmpty()){
-            throw new NotFoundException("Don't exist any user with the birthday between those dates");
-        }else{
-            return userMapper.userResponseSet(users);
-        }
+        if(userList.isEmpty())
+            throw new NotFoundException("don't exist any user with this birthday year '" + year + "'");
+        else
+            return userList;
     }
 
-    public List<UserResponseDTO> findByBirthdayYearResponse(UserDateOfBirthRequestDTO userRequest) throws NotFoundException{
-        LocalDate firstDate = LocalDate.of(userRequest.getDateOfBirth().getYear(), 1, 1);
-        LocalDate lastDate = LocalDate.of(userRequest.getDateOfBirth().getYear(), 12, 31);
-        List<UserEntity> users = userRepository.findByBirthdayBetween(firstDate, lastDate);
-
-        if(users.isEmpty()){
-            throw new NotFoundException("Don't exist any user with the birthday between those dates");
-        }else{
-            return userMapper.userResponseSet(users);
-        }
+    public List<UserResponseDTO> findByBirthdayYearResponse(Year year) throws NotFoundException{
+        return userMapper.userResponseSet(findByBirthdayYear(year));
     }
 
     public UserResponseDTO createUser(UserRequestDTO userRequest){
