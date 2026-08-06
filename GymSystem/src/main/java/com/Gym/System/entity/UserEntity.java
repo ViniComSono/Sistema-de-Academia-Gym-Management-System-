@@ -33,14 +33,14 @@ public class UserEntity {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
     private List<PhysicalAssessmentEntity> assessmentList = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "userList")
+    @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "userList", fetch = FetchType.LAZY)
     @Builder.Default
     private List<WorkOutEntity> workOutList = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.REFRESH, mappedBy = "user")
+    @OneToOne(cascade = CascadeType.REFRESH, mappedBy = "user", fetch = FetchType.LAZY)
     private SubscriptionEntity subscription;
 }

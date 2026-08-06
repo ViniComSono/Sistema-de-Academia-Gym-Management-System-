@@ -34,10 +34,10 @@ public class SubscriptionEntity {
     private PlanEntity plan;
 
     @Column(name = "payments")
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "subscription")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "subscription", fetch = FetchType.LAZY)
     @Builder.Default
     private List<PaymentEntity> paymentEntityList = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.REFRESH)
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private UserEntity user;
 }

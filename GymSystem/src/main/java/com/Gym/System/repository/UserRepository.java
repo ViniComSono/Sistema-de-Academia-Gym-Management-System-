@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
+
+
     UserEntity findByName(String nome);
 
     List<UserEntity> findByBirthday(LocalDate birthday);

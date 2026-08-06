@@ -21,21 +21,21 @@ public class WorkOutEntity {
     @Column(name = "work_out_name", unique = true)
     private String workOutName;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "workout_exercise",
             joinColumns = @JoinColumn(name = "work_out_id"),
             inverseJoinColumns = @JoinColumn(name =  "id_exercise")
     )
     @Builder.Default
-    private Set<ExerciseEntity> exerciseList = new HashSet<>();
+    private List<ExerciseEntity> exerciseList = new ArrayList<>();
 
-    @ManyToMany()
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "workout_user",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name =  "id_work_out")
     )
     @Builder.Default
-    private Set<UserEntity> userList = new HashSet<>();
+    private List<UserEntity> userList = new ArrayList<>();
 }
