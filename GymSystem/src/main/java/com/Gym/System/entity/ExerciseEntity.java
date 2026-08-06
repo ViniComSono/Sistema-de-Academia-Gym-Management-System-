@@ -1,6 +1,5 @@
 package com.Gym.System.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 

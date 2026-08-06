@@ -44,7 +44,7 @@ public class PhysicalAssessmentEntity {
     @Column(name = "all_daily_energy_expenditure")
     private BigDecimal AllDailyEnergyExpenditure;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 }

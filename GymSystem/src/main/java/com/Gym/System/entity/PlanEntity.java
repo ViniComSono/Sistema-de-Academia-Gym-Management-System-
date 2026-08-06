@@ -29,7 +29,7 @@ public class PlanEntity {
     @Column(name = "plan_duration_in_months")
     private int planDurationInMonths;
 
-    @OneToMany(cascade =  {CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToMany(cascade =  {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @Builder.Default
-    private List<SubscriptionEntity> subscriptions = new ArrayList<>();
+    private List<SubscriptionEntity> subscriptionList = new ArrayList<>();
 }
