@@ -36,7 +36,7 @@ public class SubscriptionEntity {
     @Column(name = "payments")
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "subscription", fetch = FetchType.LAZY)
     @Builder.Default
-    private List<PaymentEntity> paymentEntityList = new ArrayList<>();
+    private List<PaymentEntity> payments = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private UserEntity user;
