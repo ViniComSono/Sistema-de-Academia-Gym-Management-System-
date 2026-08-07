@@ -28,7 +28,7 @@ public class WorkOutEntity {
             inverseJoinColumns = @JoinColumn(name =  "id_exercise")
     )
     @Builder.Default
-    private List<ExerciseEntity> exerciseList = new ArrayList<>();
+    private List<ExerciseEntity> exercises = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -37,5 +37,5 @@ public class WorkOutEntity {
             inverseJoinColumns = @JoinColumn(name =  "id_work_out")
     )
     @Builder.Default
-    private List<UserEntity> userList = new ArrayList<>();
+    private List<UserEntity> users = new ArrayList<>();
 }

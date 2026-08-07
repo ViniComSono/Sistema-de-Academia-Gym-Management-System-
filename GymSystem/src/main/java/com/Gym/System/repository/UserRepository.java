@@ -52,4 +52,19 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             where p.paymentStatus = 'DELAYED'
             """)
     boolean existUserWithDelayPayment(UserEntity user);
+
+    @Query("""
+            select COUNT(u)
+            from UserEntity u
+            join u.physicalAssessments s
+            join s.payments
+            """)
+    int HowManyPaymentsTheUserHave(UserEntity user);
+
+    @Query("""
+            select COUNT(u)
+            from UserEntity u
+            join u.physicalAssessments a
+            """)
+    int HowManyPhysicalAssessmentsTheUserHave(UserEntity user);
 }

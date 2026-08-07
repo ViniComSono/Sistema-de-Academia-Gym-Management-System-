@@ -35,11 +35,11 @@ public class UserEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
-    private List<PhysicalAssessmentEntity> assessmentList = new ArrayList<>();
+    private List<PhysicalAssessmentEntity> physicalAssessments = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "userList", fetch = FetchType.LAZY)
     @Builder.Default
-    private List<WorkOutEntity> workOutList = new ArrayList<>();
+    private List<WorkOutEntity> workOuts = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.REFRESH, mappedBy = "user", fetch = FetchType.LAZY)
     private SubscriptionEntity subscription;
